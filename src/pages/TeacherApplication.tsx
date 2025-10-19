@@ -38,6 +38,12 @@ import {
   Radio,
   RadioGroup,
   Link,
+  Menu,
+  MenuButton,
+  MenuList,
+  MenuItem,
+  Image,
+  useDisclosure,
 } from "@chakra-ui/react";
 import {
   FaGraduationCap,
@@ -50,9 +56,235 @@ import {
   FaPlus,
   FaTimes,
   FaCamera,
+  FaChevronDown,
 } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+// For now, let's create a comprehensive countries list with proper flag emojis
+const countries = [
+  { name: "Afghanistan", flag: "🇦🇫", code: "AF", dialCode: "+93" },
+  { name: "Albania", flag: "🇦🇱", code: "AL", dialCode: "+355" },
+  { name: "Algeria", flag: "🇩🇿", code: "DZ", dialCode: "+213" },
+  { name: "Australia", flag: "🇦🇺", code: "AU", dialCode: "+61" },
+  { name: "Austria", flag: "🇦🇹", code: "AT", dialCode: "+43" },
+  { name: "Belgium", flag: "🇧🇪", code: "BE", dialCode: "+32" },
+  { name: "Brazil", flag: "🇧🇷", code: "BR", dialCode: "+55" },
+  { name: "Burundi", flag: "🇧🇮", code: "BI", dialCode: "+257" },
+  { name: "Canada", flag: "🇨🇦", code: "CA", dialCode: "+1" },
+  { name: "China", flag: "🇨🇳", code: "CN", dialCode: "+86" },
+  {
+    name: "Democratic Republic of Congo",
+    flag: "🇨🇩",
+    code: "CD",
+    dialCode: "+243",
+  },
+  { name: "Egypt", flag: "🇪🇬", code: "EG", dialCode: "+20" },
+  { name: "France", flag: "🇫🇷", code: "FR", dialCode: "+33" },
+  { name: "Germany", flag: "🇩🇪", code: "DE", dialCode: "+49" },
+  { name: "India", flag: "🇮🇳", code: "IN", dialCode: "+91" },
+  { name: "Italy", flag: "🇮🇹", code: "IT", dialCode: "+39" },
+  { name: "Japan", flag: "🇯🇵", code: "JP", dialCode: "+81" },
+  { name: "Kenya", flag: "🇰🇪", code: "KE", dialCode: "+254" },
+  { name: "Malawi", flag: "🇲🇼", code: "MW", dialCode: "+265" },
+  { name: "Mozambique", flag: "🇲🇿", code: "MZ", dialCode: "+258" },
+  { name: "Nigeria", flag: "🇳🇬", code: "NG", dialCode: "+234" },
+  { name: "Rwanda", flag: "🇷🇼", code: "RW", dialCode: "+250" },
+  { name: "Somalia", flag: "🇸🇴", code: "SO", dialCode: "+252" },
+  { name: "South Africa", flag: "🇿🇦", code: "ZA", dialCode: "+27" },
+  { name: "South Korea", flag: "🇰🇷", code: "KR", dialCode: "+82" },
+  { name: "Spain", flag: "🇪🇸", code: "ES", dialCode: "+34" },
+  { name: "Tanzania", flag: "🇹🇿", code: "TZ", dialCode: "+255" },
+  { name: "Uganda", flag: "🇺🇬", code: "UG", dialCode: "+256" },
+  { name: "United Kingdom", flag: "🇬🇧", code: "GB", dialCode: "+44" },
+  { name: "United States", flag: "🇺🇸", code: "US", dialCode: "+1" },
+  { name: "Zambia", flag: "🇿🇲", code: "ZM", dialCode: "+260" },
+].sort((a, b) => a.name.localeCompare(b.name)); // Sort alphabetically
+
+// Helper function to get flag image URL
+const getFlagUrl = (countryCode: string) => {
+  return `https://flagcdn.com/w20/${countryCode.toLowerCase()}.png`;
+};
+
+// Custom Country Select Component
+const CountrySelect = ({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}) => {
+  const selectedCountry = countries.find((country) => country.name === value);
+
+  return (
+    <Menu>
+      <MenuButton
+        as={Button}
+        rightIcon={<FaChevronDown />}
+        w="100%"
+        textAlign="left"
+        fontWeight="normal"
+        bg="white"
+        border="1px solid"
+        borderColor="gray.200"
+        _hover={{ borderColor: "gray.300" }}
+        _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+      >
+        {selectedCountry ? (
+          <HStack spacing={2}>
+            <Image
+              src={getFlagUrl(selectedCountry.code)}
+              alt={`${selectedCountry.name} flag`}
+              w="20px"
+              h="15px"
+              fallback={<Text fontSize="sm">{selectedCountry.flag}</Text>}
+            />
+            <Text color="gray.800">{selectedCountry.name}</Text>
+          </HStack>
+        ) : (
+          <Text color="gray.500">{placeholder}</Text>
+        )}
+      </MenuButton>
+      <MenuList maxH="200px" overflowY="auto">
+        {countries.map((country) => (
+          <MenuItem
+            key={country.code}
+            onClick={() => onChange(country.name)}
+            _hover={{ bg: "gray.100" }}
+          >
+            <HStack spacing={2}>
+              <Image
+                src={getFlagUrl(country.code)}
+                alt={`${country.name} flag`}
+                w="20px"
+                h="15px"
+                fallback={<Text fontSize="sm">{country.flag}</Text>}
+              />
+              <Text color="gray.800">{country.name}</Text>
+            </HStack>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+};
+
+// Custom Language Select Component
+// Helper function to get flag image URL for languages
+const getLanguageFlagUrl = (countryCode: string) => {
+  if (countryCode === "world") return null; // No flag image for "Other"
+  return `https://flagcdn.com/w20/${countryCode}.png`;
+};
+
+// Custom Language Select Component
+const LanguageSelect = ({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}) => {
+  const selectedLanguage = commonLanguages.find(
+    (language) => language.name === value
+  );
+
+  return (
+    <Menu>
+      <MenuButton
+        as={Button}
+        rightIcon={<FaChevronDown />}
+        w="100%"
+        textAlign="left"
+        fontWeight="normal"
+        bg="white"
+        border="1px solid"
+        borderColor="gray.300"
+        _hover={{ borderColor: "gray.400", shadow: "sm" }}
+        _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+        minH="40px"
+      >
+        {selectedLanguage ? (
+          <HStack spacing={3}>
+            {selectedLanguage.code === "world" ? (
+              <Text fontSize="lg" role="img" aria-label="Global">
+                🌐
+              </Text>
+            ) : (
+              <Image
+                src={getLanguageFlagUrl(selectedLanguage.code)}
+                alt={`${selectedLanguage.name} flag`}
+                w="20px"
+                h="15px"
+                fallback={
+                  <Text
+                    fontSize="lg"
+                    role="img"
+                    aria-label={`${selectedLanguage.name} flag`}
+                  >
+                    {selectedLanguage.flag}
+                  </Text>
+                }
+              />
+            )}
+            <Text color="gray.800" fontWeight="medium">
+              {selectedLanguage.name}
+            </Text>
+          </HStack>
+        ) : (
+          <Text color="gray.500">{placeholder}</Text>
+        )}
+      </MenuButton>
+      <MenuList
+        maxH="200px"
+        overflowY="auto"
+        shadow="lg"
+        border="1px solid"
+        borderColor="gray.200"
+      >
+        {commonLanguages.map((language) => (
+          <MenuItem
+            key={language.code}
+            onClick={() => onChange(language.name)}
+            _hover={{ bg: "blue.50" }}
+            _focus={{ bg: "blue.50" }}
+            py={3}
+          >
+            <HStack spacing={3}>
+              {language.code === "world" ? (
+                <Text fontSize="lg" role="img" aria-label="Global">
+                  🌐
+                </Text>
+              ) : (
+                <Image
+                  src={getLanguageFlagUrl(language.code)}
+                  alt={`${language.name} flag`}
+                  w="20px"
+                  h="15px"
+                  fallback={
+                    <Text
+                      fontSize="lg"
+                      role="img"
+                      aria-label={`${language.name} flag`}
+                    >
+                      {language.flag}
+                    </Text>
+                  }
+                />
+              )}
+              <Text color="gray.800" fontWeight="medium">
+                {language.name}
+              </Text>
+            </HStack>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+};
 
 const steps = [
   { title: "Teacher Type" },
@@ -173,26 +405,6 @@ const initialData: TeacherApplicationData = {
   agreedToTerms: false,
 };
 
-const countries = [
-  { name: "Tanzania", flag: "🇹🇿", code: "TZ" },
-  { name: "Kenya", flag: "🇰🇪", code: "KE" },
-  { name: "Uganda", flag: "🇺🇬", code: "UG" },
-  { name: "Rwanda", flag: "🇷🇼", code: "RW" },
-  { name: "Burundi", flag: "🇧🇮", code: "BI" },
-  { name: "Democratic Republic of Congo", flag: "🇨🇩", code: "CD" },
-  { name: "Mozambique", flag: "🇲🇿", code: "MZ" },
-  { name: "Malawi", flag: "🇲🇼", code: "MW" },
-  { name: "Zambia", flag: "🇿🇲", code: "ZM" },
-  { name: "Somalia", flag: "🇸🇴", code: "SO" },
-  { name: "United States", flag: "🇺🇸", code: "US" },
-  { name: "United Kingdom", flag: "🇬🇧", code: "GB" },
-  { name: "Canada", flag: "🇨🇦", code: "CA" },
-  { name: "Australia", flag: "🇦🇺", code: "AU" },
-  { name: "Germany", flag: "🇩🇪", code: "DE" },
-  { name: "France", flag: "🇫🇷", code: "FR" },
-  { name: "Other", flag: "🌍", code: "OTHER" },
-];
-
 const languageLevels = [
   { value: "native", label: "Native" },
   { value: "c2", label: "C2 - Proficient" },
@@ -204,20 +416,20 @@ const languageLevels = [
 ];
 
 const commonLanguages = [
-  "English",
-  "Swahili",
-  "Arabic",
-  "French",
-  "Spanish",
-  "Mandarin",
-  "Portuguese",
-  "German",
-  "Italian",
-  "Japanese",
-  "Korean",
-  "Russian",
-  "Hindi",
-  "Other",
+  { name: "English", flag: "🇺🇸", code: "us" },
+  { name: "Swahili", flag: "��", code: "tz" },
+  { name: "Arabic", flag: "🇸🇦", code: "sa" },
+  { name: "French", flag: "🇫🇷", code: "fr" },
+  { name: "Spanish", flag: "🇪🇸", code: "es" },
+  { name: "Mandarin", flag: "🇨🇳", code: "cn" },
+  { name: "Portuguese", flag: "🇧🇷", code: "br" },
+  { name: "German", flag: "🇩🇪", code: "de" },
+  { name: "Italian", flag: "🇮🇹", code: "it" },
+  { name: "Japanese", flag: "🇯🇵", code: "jp" },
+  { name: "Korean", flag: "🇰🇷", code: "kr" },
+  { name: "Russian", flag: "🇷🇺", code: "ru" },
+  { name: "Hindi", flag: "🇮🇳", code: "in" },
+  { name: "Other", flag: "🌐", code: "world" },
 ];
 
 const specialties = [
@@ -949,33 +1161,21 @@ export default function TeacherApplication() {
                         where you are from once you have finished onboarding.
                       </Text>
                     </FormLabel>
-                    <Select
+                    <CountrySelect
                       placeholder="Select your country of origin"
                       value={data.from}
-                      onChange={(e) => updateData("from", e.target.value)}
-                    >
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.name}>
-                          {country.flag} {country.name}
-                        </option>
-                      ))}
-                    </Select>
+                      onChange={(value) => updateData("from", value)}
+                    />
                     <FormErrorMessage>{errors.from}</FormErrorMessage>
                   </FormControl>
 
                   <FormControl isInvalid={!!errors.livingIn}>
                     <FormLabel>Living in</FormLabel>
-                    <Select
+                    <CountrySelect
                       placeholder="Select where you currently live"
                       value={data.livingIn}
-                      onChange={(e) => updateData("livingIn", e.target.value)}
-                    >
-                      {countries.map((country) => (
-                        <option key={country.code} value={country.name}>
-                          {country.flag} {country.name}
-                        </option>
-                      ))}
-                    </Select>
+                      onChange={(value) => updateData("livingIn", value)}
+                    />
                     <FormErrorMessage>{errors.livingIn}</FormErrorMessage>
                   </FormControl>
                 </SimpleGrid>
@@ -1070,116 +1270,212 @@ export default function TeacherApplication() {
             <Divider />
 
             {/* 2.3 Language Skills */}
-            <Box>
-              <VStack spacing={4} align="stretch">
-                <VStack spacing={2} align="start">
-                  <Text fontSize="xl" fontWeight="bold" color="gray.800">
-                    2.3 Language Skills
-                  </Text>
-                  <Text fontSize="sm" color="gray.600">
+            <Box
+              bg="gradient(135deg, blue.50 0%, purple.50 100%)"
+              p={6}
+              borderRadius="xl"
+              border="1px solid"
+              borderColor="blue.100"
+              shadow="lg"
+            >
+              <VStack spacing={6} align="stretch">
+                <VStack spacing={3} align="start">
+                  <HStack spacing={3}>
+                    <Icon as={FaGraduationCap} color="blue.600" boxSize={6} />
+                    <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                      2.3 Language Skills
+                    </Text>
+                  </HStack>
+                  <Text fontSize="sm" color="gray.700" lineHeight={1.6}>
                     Please check that your listed languages and levels are
                     accurate. You will be able to set any language that is
                     listed as native or C2 as a teaching language.
                     SalvatoreLingo uses the Common European Framework of
                     Reference for Languages (CEFR) for displaying language
                     levels.{" "}
-                    <Link color="blue.500" href="#" textDecoration="underline">
+                    <Link
+                      color="blue.600"
+                      href="#"
+                      textDecoration="underline"
+                      fontWeight="medium"
+                    >
                       Learn more
                     </Link>
                   </Text>
                 </VStack>
 
-                <FormControl isInvalid={!!errors.nativeLanguage}>
-                  <FormLabel>Native Language</FormLabel>
-                  <Select
-                    placeholder="Select your native language"
-                    value={data.nativeLanguage}
-                    onChange={(e) =>
-                      updateData("nativeLanguage", e.target.value)
-                    }
-                  >
-                    {commonLanguages.map((language) => (
-                      <option key={language} value={language}>
-                        {language}
-                      </option>
-                    ))}
-                  </Select>
-                  <FormErrorMessage>{errors.nativeLanguage}</FormErrorMessage>
-                </FormControl>
+                <Card bg="white" shadow="md" borderRadius="lg">
+                  <CardBody p={5}>
+                    <FormControl isInvalid={!!errors.nativeLanguage}>
+                      <FormLabel
+                        color="gray.700"
+                        fontWeight="semibold"
+                        fontSize="md"
+                        mb={3}
+                      >
+                        🌟 Native Language
+                      </FormLabel>
+                      <LanguageSelect
+                        placeholder="Select your native language"
+                        value={data.nativeLanguage}
+                        onChange={(value) =>
+                          updateData("nativeLanguage", value)
+                        }
+                      />
+                      <FormErrorMessage>
+                        {errors.nativeLanguage}
+                      </FormErrorMessage>
+                    </FormControl>
+                  </CardBody>
+                </Card>
 
-                <Box>
-                  <FormLabel>Additional Languages</FormLabel>
-                  <VStack spacing={3} align="stretch">
-                    {data.otherLanguages.map((lang, index) => (
-                      <HStack key={index} spacing={2}>
-                        <Select
-                          placeholder="Select language"
-                          value={lang.language}
-                          onChange={(e) => {
-                            const newLanguages = [...data.otherLanguages];
-                            newLanguages[index] = {
-                              ...lang,
-                              language: e.target.value,
-                            };
-                            updateData("otherLanguages", newLanguages);
-                          }}
-                          flex={2}
+                <Card bg="white" shadow="md" borderRadius="lg">
+                  <CardBody p={5}>
+                    <VStack spacing={4} align="stretch">
+                      <HStack justify="space-between" align="center">
+                        <FormLabel
+                          color="gray.700"
+                          fontWeight="semibold"
+                          fontSize="md"
+                          mb={0}
                         >
-                          {commonLanguages.map((language) => (
-                            <option key={language} value={language}>
-                              {language}
-                            </option>
-                          ))}
-                        </Select>
-                        <Select
-                          placeholder="Level"
-                          value={lang.level}
-                          onChange={(e) => {
-                            const newLanguages = [...data.otherLanguages];
-                            newLanguages[index] = {
-                              ...lang,
-                              level: e.target.value,
-                            };
-                            updateData("otherLanguages", newLanguages);
-                          }}
-                          flex={1}
-                        >
-                          {languageLevels.map((level) => (
-                            <option key={level.value} value={level.value}>
-                              {level.label}
-                            </option>
-                          ))}
-                        </Select>
+                          🗣️ Additional Languages
+                        </FormLabel>
                         <Button
                           size="sm"
+                          leftIcon={<FaPlus />}
+                          colorScheme="blue"
                           variant="outline"
-                          colorScheme="red"
                           onClick={() => {
-                            const newLanguages = data.otherLanguages.filter(
-                              (_, i) => i !== index
-                            );
-                            updateData("otherLanguages", newLanguages);
+                            updateData("otherLanguages", [
+                              ...data.otherLanguages,
+                              { language: "", level: "" },
+                            ]);
                           }}
                         >
-                          <FaTimes />
+                          Add Language
                         </Button>
                       </HStack>
-                    ))}
-                    <Button
-                      variant="outline"
-                      leftIcon={<FaPlus />}
-                      size="sm"
-                      onClick={() => {
-                        updateData("otherLanguages", [
-                          ...data.otherLanguages,
-                          { language: "", level: "" },
-                        ]);
-                      }}
-                    >
-                      Add another language
-                    </Button>
-                  </VStack>
-                </Box>
+
+                      {data.otherLanguages.length === 0 ? (
+                        <Box
+                          p={4}
+                          bg="gray.50"
+                          borderRadius="md"
+                          border="2px dashed"
+                          borderColor="gray.300"
+                          textAlign="center"
+                        >
+                          <Text color="gray.500" fontSize="sm">
+                            No additional languages added yet. Click &quot;Add
+                            Language&quot; to get started.
+                          </Text>
+                        </Box>
+                      ) : (
+                        <VStack spacing={3} align="stretch">
+                          {data.otherLanguages.map((lang, index) => (
+                            <Box
+                              key={index}
+                              p={4}
+                              bg="gray.50"
+                              borderRadius="md"
+                              border="1px solid"
+                              borderColor="gray.200"
+                            >
+                              <HStack spacing={3}>
+                                <Box flex={2}>
+                                  <Text
+                                    fontSize="xs"
+                                    color="gray.600"
+                                    mb={1}
+                                    fontWeight="medium"
+                                  >
+                                    Language
+                                  </Text>
+                                  <LanguageSelect
+                                    placeholder="Select language"
+                                    value={lang.language}
+                                    onChange={(value) => {
+                                      const newLanguages = [
+                                        ...data.otherLanguages,
+                                      ];
+                                      newLanguages[index] = {
+                                        ...lang,
+                                        language: value,
+                                      };
+                                      updateData(
+                                        "otherLanguages",
+                                        newLanguages
+                                      );
+                                    }}
+                                  />
+                                </Box>
+                                <Box flex={1}>
+                                  <Text
+                                    fontSize="xs"
+                                    color="gray.600"
+                                    mb={1}
+                                    fontWeight="medium"
+                                  >
+                                    Proficiency Level
+                                  </Text>
+                                  <Select
+                                    placeholder="Level"
+                                    value={lang.level}
+                                    bg="white"
+                                    borderColor="gray.300"
+                                    _hover={{ borderColor: "gray.400" }}
+                                    _focus={{
+                                      borderColor: "blue.500",
+                                      boxShadow: "0 0 0 1px #3182ce",
+                                    }}
+                                    onChange={(e) => {
+                                      const newLanguages = [
+                                        ...data.otherLanguages,
+                                      ];
+                                      newLanguages[index] = {
+                                        ...lang,
+                                        level: e.target.value,
+                                      };
+                                      updateData(
+                                        "otherLanguages",
+                                        newLanguages
+                                      );
+                                    }}
+                                  >
+                                    {languageLevels.map((level) => (
+                                      <option
+                                        key={level.value}
+                                        value={level.value}
+                                      >
+                                        {level.label}
+                                      </option>
+                                    ))}
+                                  </Select>
+                                </Box>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  colorScheme="red"
+                                  onClick={() => {
+                                    const newLanguages =
+                                      data.otherLanguages.filter(
+                                        (_, i) => i !== index
+                                      );
+                                    updateData("otherLanguages", newLanguages);
+                                  }}
+                                  aria-label="Remove language"
+                                >
+                                  <FaTimes />
+                                </Button>
+                              </HStack>
+                            </Box>
+                          ))}
+                        </VStack>
+                      )}
+                    </VStack>
+                  </CardBody>
+                </Card>
               </VStack>
             </Box>
 
