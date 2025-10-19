@@ -57,6 +57,15 @@ import {
   FaTimes,
   FaCamera,
   FaChevronDown,
+  FaCalendarDay,
+  FaCalendarAlt,
+  FaClock,
+  FaBirthdayCake,
+  FaStar,
+  FaComments,
+  FaGlobe,
+  FaLanguage,
+  FaChartBar,
 } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -129,6 +138,8 @@ const CountrySelect = ({
         bg="white"
         border="1px solid"
         borderColor="gray.200"
+        minH={{ base: "48px", md: "40px" }}
+        fontSize={{ base: "16px", md: "14px" }}
         _hover={{ borderColor: "gray.300" }}
         _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
       >
@@ -153,6 +164,8 @@ const CountrySelect = ({
             key={country.code}
             onClick={() => onChange(country.name)}
             _hover={{ bg: "gray.100" }}
+            minH={{ base: "48px", md: "40px" }}
+            fontSize={{ base: "16px", md: "14px" }}
           >
             <HStack spacing={2}>
               <Image
@@ -205,14 +218,13 @@ const LanguageSelect = ({
         borderColor="gray.300"
         _hover={{ borderColor: "gray.400", shadow: "sm" }}
         _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
-        minH="40px"
+        minH={{ base: "48px", md: "40px" }}
+        fontSize={{ base: "16px", md: "14px" }}
       >
         {selectedLanguage ? (
           <HStack spacing={3}>
             {selectedLanguage.code === "world" ? (
-              <Text fontSize="lg" role="img" aria-label="Global">
-                🌐
-              </Text>
+              <Icon as={FaGlobe} color="gray.500" boxSize={4} />
             ) : (
               <Image
                 src={getLanguageFlagUrl(selectedLanguage.code)}
@@ -255,9 +267,7 @@ const LanguageSelect = ({
           >
             <HStack spacing={3}>
               {language.code === "world" ? (
-                <Text fontSize="lg" role="img" aria-label="Global">
-                  🌐
-                </Text>
+                <Icon as={FaGlobe} color="gray.500" boxSize={4} />
               ) : (
                 <Image
                   src={getLanguageFlagUrl(language.code)}
@@ -285,6 +295,281 @@ const LanguageSelect = ({
     </Menu>
   );
 };
+
+// Custom Proficiency Level Select Component
+const ProficiencySelect = ({
+  placeholder,
+  value,
+  onChange,
+}: {
+  placeholder: string;
+  value: string;
+  onChange: (value: string) => void;
+}) => {
+  const selectedLevel = languageLevels.find((level) => level.value === value);
+
+  return (
+    <Menu>
+      <MenuButton
+        as={Button}
+        rightIcon={<FaChevronDown />}
+        w="100%"
+        textAlign="left"
+        fontWeight="normal"
+        bg="white"
+        border="1px solid"
+        borderColor="gray.300"
+        _hover={{ borderColor: "gray.400", shadow: "sm" }}
+        _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+        minH={{ base: "48px", md: "40px" }}
+        fontSize={{ base: "16px", md: "14px" }}
+      >
+        {selectedLevel ? (
+          <HStack spacing={3}>
+            <Badge
+              colorScheme={selectedLevel.color}
+              variant="solid"
+              fontSize="xs"
+              px={2}
+              py={1}
+            >
+              {selectedLevel.value.toUpperCase()}
+            </Badge>
+            <Text color="gray.800" fontWeight="medium">
+              {selectedLevel.label}
+            </Text>
+          </HStack>
+        ) : (
+          <Text color="gray.500">{placeholder}</Text>
+        )}
+      </MenuButton>
+      <MenuList
+        maxH={{ base: "250px", md: "300px" }}
+        overflowY="auto"
+        shadow="lg"
+        border="1px solid"
+        borderColor="gray.200"
+        w="100%"
+        fontSize={{ base: "14px", md: "16px" }}
+      >
+        {languageLevels.map((level) => (
+          <MenuItem
+            key={level.value}
+            onClick={() => onChange(level.value)}
+            _hover={{ bg: `${level.color}.50` }}
+            _focus={{ bg: `${level.color}.50` }}
+            py={{ base: 4, md: 3 }}
+            minH={{ base: "60px", md: "auto" }}
+          >
+            <VStack spacing={{ base: 2, md: 1 }} align="start" w="100%">
+              <HStack spacing={{ base: 2, md: 3 }} w="100%">
+                <Badge
+                  colorScheme={level.color}
+                  variant="solid"
+                  fontSize={{ base: "xs", md: "xs" }}
+                  px={{ base: 3, md: 2 }}
+                  py={{ base: 1, md: 1 }}
+                  minW={{ base: "40px", md: "auto" }}
+                >
+                  {level.value.toUpperCase()}
+                </Badge>
+                <Text
+                  color="gray.800"
+                  fontWeight="semibold"
+                  fontSize={{ base: "sm", md: "md" }}
+                >
+                  {level.label}
+                </Text>
+              </HStack>
+              <Text
+                fontSize={{ base: "xs", md: "xs" }}
+                color="gray.600"
+                pl={{ base: 6, md: 8 }}
+                lineHeight={{ base: 1.3, md: 1.4 }}
+                display={{ base: "none", md: "block" }}
+              >
+                {level.description}
+              </Text>
+            </VStack>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+};
+
+// Custom Date Select Components
+const DaySelect = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => (
+  <Menu>
+    <MenuButton
+      as={Button}
+      rightIcon={<FaChevronDown />}
+      w="100%"
+      textAlign="left"
+      fontWeight="normal"
+      bg="white"
+      border="1px solid"
+      borderColor="gray.300"
+      _hover={{ borderColor: "gray.400", shadow: "sm" }}
+      _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+      minH={{ base: "48px", md: "40px" }}
+      fontSize={{ base: "16px", md: "14px" }}
+    >
+      {value ? (
+        <HStack spacing={2}>
+          <Icon as={FaCalendarDay} color="blue.500" />
+          <Text color="gray.800" fontWeight="medium">
+            {parseInt(value)}
+          </Text>
+        </HStack>
+      ) : (
+        <HStack spacing={2}>
+          <Icon as={FaCalendarDay} color="gray.400" />
+          <Text color="gray.500">Day</Text>
+        </HStack>
+      )}
+    </MenuButton>
+    <MenuList maxH="200px" overflowY="auto" shadow="lg">
+      {Array.from({ length: 31 }, (_, i) => i + 1).map((day) => (
+        <MenuItem
+          key={day}
+          onClick={() => onChange(day.toString().padStart(2, "0"))}
+          _hover={{ bg: "blue.50" }}
+        >
+          <Text fontWeight="medium">{day}</Text>
+        </MenuItem>
+      ))}
+    </MenuList>
+  </Menu>
+);
+
+const MonthSelect = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => {
+  const months = [
+    { value: "01", label: "Jan" },
+    { value: "02", label: "Feb" },
+    { value: "03", label: "Mar" },
+    { value: "04", label: "Apr" },
+    { value: "05", label: "May" },
+    { value: "06", label: "Jun" },
+    { value: "07", label: "Jul" },
+    { value: "08", label: "Aug" },
+    { value: "09", label: "Sep" },
+    { value: "10", label: "Oct" },
+    { value: "11", label: "Nov" },
+    { value: "12", label: "Dec" },
+  ];
+
+  const selectedMonth = months.find((month) => month.value === value);
+
+  return (
+    <Menu>
+      <MenuButton
+        as={Button}
+        rightIcon={<FaChevronDown />}
+        w="100%"
+        textAlign="left"
+        fontWeight="normal"
+        bg="white"
+        border="1px solid"
+        borderColor="gray.300"
+        _hover={{ borderColor: "gray.400", shadow: "sm" }}
+        _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+        minH={{ base: "48px", md: "40px" }}
+        fontSize={{ base: "16px", md: "14px" }}
+      >
+        {selectedMonth ? (
+          <HStack spacing={2}>
+            <Icon as={FaCalendarAlt} color="blue.500" />
+            <Text color="gray.800" fontWeight="medium">
+              {selectedMonth.label}
+            </Text>
+          </HStack>
+        ) : (
+          <HStack spacing={2}>
+            <Icon as={FaCalendarAlt} color="gray.400" />
+            <Text color="gray.500">Month</Text>
+          </HStack>
+        )}
+      </MenuButton>
+      <MenuList maxH="200px" overflowY="auto" shadow="lg">
+        {months.map((month) => (
+          <MenuItem
+            key={month.value}
+            onClick={() => onChange(month.value)}
+            _hover={{ bg: "blue.50" }}
+          >
+            <Text fontWeight="medium">{month.label}</Text>
+          </MenuItem>
+        ))}
+      </MenuList>
+    </Menu>
+  );
+};
+
+const YearSelect = ({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (value: string) => void;
+}) => (
+  <Menu>
+    <MenuButton
+      as={Button}
+      rightIcon={<FaChevronDown />}
+      w="100%"
+      textAlign="left"
+      fontWeight="normal"
+      bg="white"
+      border="1px solid"
+      borderColor="gray.300"
+      _hover={{ borderColor: "gray.400", shadow: "sm" }}
+      _focus={{ borderColor: "blue.500", boxShadow: "0 0 0 1px #3182ce" }}
+      minH={{ base: "48px", md: "40px" }}
+      fontSize={{ base: "16px", md: "14px" }}
+    >
+      {value ? (
+        <HStack spacing={2}>
+          <Icon as={FaClock} color="blue.500" />
+          <Text color="gray.800" fontWeight="medium">
+            {value}
+          </Text>
+        </HStack>
+      ) : (
+        <HStack spacing={2}>
+          <Icon as={FaClock} color="gray.400" />
+          <Text color="gray.500">Year</Text>
+        </HStack>
+      )}
+    </MenuButton>
+    <MenuList maxH="200px" overflowY="auto" shadow="lg">
+      {Array.from(
+        { length: 80 },
+        (_, i) => new Date().getFullYear() - 16 - i
+      ).map((year) => (
+        <MenuItem
+          key={year}
+          onClick={() => onChange(year.toString())}
+          _hover={{ bg: "blue.50" }}
+        >
+          <Text fontWeight="medium">{year}</Text>
+        </MenuItem>
+      ))}
+    </MenuList>
+  </Menu>
+);
 
 const steps = [
   { title: "Teacher Type" },
@@ -406,13 +691,50 @@ const initialData: TeacherApplicationData = {
 };
 
 const languageLevels = [
-  { value: "native", label: "Native" },
-  { value: "c2", label: "C2 - Proficient" },
-  { value: "c1", label: "C1 - Advanced" },
-  { value: "b2", label: "B2 - Upper Intermediate" },
-  { value: "b1", label: "B1 - Intermediate" },
-  { value: "a2", label: "A2 - Elementary" },
-  { value: "a1", label: "A1 - Beginner" },
+  {
+    value: "native",
+    label: "Native",
+    description: "Your mother tongue or language learned from birth",
+    color: "purple",
+  },
+  {
+    value: "c2",
+    label: "C2 - Proficient",
+    description: "Can understand virtually everything heard or read with ease",
+    color: "green",
+  },
+  {
+    value: "c1",
+    label: "C1 - Advanced",
+    description:
+      "Can express ideas fluently and spontaneously without searching",
+    color: "blue",
+  },
+  {
+    value: "b2",
+    label: "B2 - Upper Intermediate",
+    description:
+      "Can interact with native speakers with fluency and naturalness",
+    color: "teal",
+  },
+  {
+    value: "b1",
+    label: "B1 - Intermediate",
+    description: "Can deal with most situations when traveling or at work",
+    color: "orange",
+  },
+  {
+    value: "a2",
+    label: "A2 - Elementary",
+    description: "Can communicate in simple, routine tasks and familiar topics",
+    color: "yellow",
+  },
+  {
+    value: "a1",
+    label: "A1 - Beginner",
+    description: "Can understand and use basic phrases and expressions",
+    color: "red",
+  },
 ];
 
 const commonLanguages = [
@@ -1005,6 +1327,8 @@ export default function TeacherApplication() {
                     placeholder="Ayub Abdi"
                     value={data.displayName}
                     onChange={(e) => updateData("displayName", e.target.value)}
+                    size={{ base: "lg", md: "md" }}
+                    fontSize={{ base: "16px", md: "14px" }}
                   />
                   <FormErrorMessage>{errors.displayName}</FormErrorMessage>
                 </FormControl>
@@ -1212,6 +1536,8 @@ export default function TeacherApplication() {
                       placeholder="AYUB"
                       value={data.firstName}
                       onChange={(e) => updateData("firstName", e.target.value)}
+                      size={{ base: "lg", md: "md" }}
+                      fontSize={{ base: "16px", md: "14px" }}
                     />
                     <FormErrorMessage>{errors.firstName}</FormErrorMessage>
                   </FormControl>
@@ -1222,19 +1548,160 @@ export default function TeacherApplication() {
                       placeholder="ABDI"
                       value={data.lastName}
                       onChange={(e) => updateData("lastName", e.target.value)}
+                      size={{ base: "lg", md: "md" }}
+                      fontSize={{ base: "16px", md: "14px" }}
                     />
                     <FormErrorMessage>{errors.lastName}</FormErrorMessage>
                   </FormControl>
 
                   <FormControl isInvalid={!!errors.dateOfBirth}>
-                    <FormLabel>Birthday</FormLabel>
-                    <Input
-                      type="date"
-                      value={data.dateOfBirth}
-                      onChange={(e) =>
-                        updateData("dateOfBirth", e.target.value)
-                      }
-                    />
+                    <FormLabel
+                      color="gray.700"
+                      fontWeight="semibold"
+                      fontSize="md"
+                      mb={3}
+                    >
+                      <HStack spacing={2}>
+                        <Icon as={FaBirthdayCake} color="blue.500" />
+                        <Text>Birthday</Text>
+                      </HStack>
+                    </FormLabel>
+                    <Card
+                      bg="gray.50"
+                      border="1px solid"
+                      borderColor="gray.200"
+                      borderRadius="lg"
+                    >
+                      <CardBody p={4}>
+                        <SimpleGrid
+                          columns={{ base: 1, sm: 3 }}
+                          spacing={{ base: 3, sm: 4 }}
+                        >
+                          <Box>
+                            <VStack spacing={2} align="stretch">
+                              <HStack spacing={2}>
+                                <Icon
+                                  as={FaCalendarDay}
+                                  color="blue.500"
+                                  boxSize={3}
+                                />
+                                <Text
+                                  fontSize="xs"
+                                  color="gray.600"
+                                  fontWeight="semibold"
+                                  textTransform="uppercase"
+                                >
+                                  Day
+                                </Text>
+                              </HStack>
+                              <DaySelect
+                                value={data.dateOfBirth.split("-")[2] || ""}
+                                onChange={(value) => {
+                                  const [year, month] =
+                                    data.dateOfBirth.split("-");
+                                  const newDate = `${year || ""}-${
+                                    month || ""
+                                  }-${value}`;
+                                  updateData("dateOfBirth", newDate);
+                                }}
+                              />
+                            </VStack>
+                          </Box>
+
+                          <Box>
+                            <VStack spacing={2} align="stretch">
+                              <HStack spacing={2}>
+                                <Icon
+                                  as={FaCalendarAlt}
+                                  color="blue.500"
+                                  boxSize={3}
+                                />
+                                <Text
+                                  fontSize="xs"
+                                  color="gray.600"
+                                  fontWeight="semibold"
+                                  textTransform="uppercase"
+                                >
+                                  Month
+                                </Text>
+                              </HStack>
+                              <MonthSelect
+                                value={data.dateOfBirth.split("-")[1] || ""}
+                                onChange={(value) => {
+                                  const [year, , day] =
+                                    data.dateOfBirth.split("-");
+                                  const newDate = `${year || ""}-${value}-${
+                                    day || ""
+                                  }`;
+                                  updateData("dateOfBirth", newDate);
+                                }}
+                              />
+                            </VStack>
+                          </Box>
+
+                          <Box>
+                            <VStack spacing={2} align="stretch">
+                              <HStack spacing={2}>
+                                <Icon
+                                  as={FaClock}
+                                  color="blue.500"
+                                  boxSize={3}
+                                />
+                                <Text
+                                  fontSize="xs"
+                                  color="gray.600"
+                                  fontWeight="semibold"
+                                  textTransform="uppercase"
+                                >
+                                  Year
+                                </Text>
+                              </HStack>
+                              <YearSelect
+                                value={data.dateOfBirth.split("-")[0] || ""}
+                                onChange={(value) => {
+                                  const [, month, day] =
+                                    data.dateOfBirth.split("-");
+                                  const newDate = `${value}-${month || ""}-${
+                                    day || ""
+                                  }`;
+                                  updateData("dateOfBirth", newDate);
+                                }}
+                              />
+                            </VStack>
+                          </Box>
+                        </SimpleGrid>
+
+                        {data.dateOfBirth &&
+                          data.dateOfBirth.split("-").every((part) => part) && (
+                            <Box
+                              mt={4}
+                              p={3}
+                              bg="blue.50"
+                              borderRadius="md"
+                              border="1px solid"
+                              borderColor="blue.200"
+                            >
+                              <HStack justify="center" spacing={2}>
+                                <Icon as={FaBirthdayCake} color="blue.600" />
+                                <Text
+                                  fontSize="sm"
+                                  color="blue.700"
+                                  fontWeight="medium"
+                                >
+                                  Selected:{" "}
+                                  {new Date(
+                                    data.dateOfBirth
+                                  ).toLocaleDateString("en-US", {
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  })}
+                                </Text>
+                              </HStack>
+                            </Box>
+                          )}
+                      </CardBody>
+                    </Card>
                     <FormErrorMessage>{errors.dateOfBirth}</FormErrorMessage>
                   </FormControl>
 
@@ -1272,21 +1739,33 @@ export default function TeacherApplication() {
             {/* 2.3 Language Skills */}
             <Box
               bg="gradient(135deg, blue.50 0%, purple.50 100%)"
-              p={6}
+              p={{ base: 4, md: 6 }}
               borderRadius="xl"
               border="1px solid"
               borderColor="blue.100"
               shadow="lg"
             >
-              <VStack spacing={6} align="stretch">
+              <VStack spacing={{ base: 4, md: 6 }} align="stretch">
                 <VStack spacing={3} align="start">
-                  <HStack spacing={3}>
-                    <Icon as={FaGraduationCap} color="blue.600" boxSize={6} />
-                    <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                  <HStack spacing={{ base: 2, md: 3 }}>
+                    <Icon
+                      as={FaGraduationCap}
+                      color="blue.600"
+                      boxSize={{ base: 5, md: 6 }}
+                    />
+                    <Text
+                      fontSize={{ base: "lg", md: "xl" }}
+                      fontWeight="bold"
+                      color="gray.800"
+                    >
                       2.3 Language Skills
                     </Text>
                   </HStack>
-                  <Text fontSize="sm" color="gray.700" lineHeight={1.6}>
+                  <Text
+                    fontSize={{ base: "xs", md: "sm" }}
+                    color="gray.700"
+                    lineHeight={1.6}
+                  >
                     Please check that your listed languages and levels are
                     accurate. You will be able to set any language that is
                     listed as native or C2 as a teaching language.
@@ -1304,172 +1783,308 @@ export default function TeacherApplication() {
                   </Text>
                 </VStack>
 
-                <Card bg="white" shadow="md" borderRadius="lg">
-                  <CardBody p={5}>
+                <Card
+                  bg="white"
+                  shadow="md"
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor="blue.100"
+                  _hover={{ shadow: "lg", borderColor: "blue.200" }}
+                  transition="all 0.2s"
+                >
+                  <CardBody p={{ base: 4, md: 6 }}>
                     <FormControl isInvalid={!!errors.nativeLanguage}>
-                      <FormLabel
-                        color="gray.700"
-                        fontWeight="semibold"
-                        fontSize="md"
-                        mb={3}
-                      >
-                        🌟 Native Language
-                      </FormLabel>
-                      <LanguageSelect
-                        placeholder="Select your native language"
-                        value={data.nativeLanguage}
-                        onChange={(value) =>
-                          updateData("nativeLanguage", value)
-                        }
-                      />
-                      <FormErrorMessage>
-                        {errors.nativeLanguage}
-                      </FormErrorMessage>
+                      <VStack spacing={4} align="stretch">
+                        <HStack spacing={3} align="center">
+                          <Box
+                            bg="blue.50"
+                            p={2}
+                            borderRadius="lg"
+                            border="1px solid"
+                            borderColor="blue.200"
+                          >
+                            <Icon as={FaStar} color="blue.500" boxSize={5} />
+                          </Box>
+                          <Box>
+                            <Text
+                              fontSize={{ base: "md", md: "lg" }}
+                              fontWeight="bold"
+                              color="gray.800"
+                              mb={1}
+                            >
+                              Native Language
+                            </Text>
+                            <Text
+                              fontSize={{ base: "xs", md: "sm" }}
+                              color="gray.600"
+                            >
+                              Your mother tongue or first language
+                            </Text>
+                          </Box>
+                        </HStack>
+                        <LanguageSelect
+                          placeholder="Select your native language"
+                          value={data.nativeLanguage}
+                          onChange={(value) =>
+                            updateData("nativeLanguage", value)
+                          }
+                        />
+                        <FormErrorMessage>
+                          {errors.nativeLanguage}
+                        </FormErrorMessage>
+                      </VStack>
                     </FormControl>
                   </CardBody>
                 </Card>
 
-                <Card bg="white" shadow="md" borderRadius="lg">
-                  <CardBody p={5}>
-                    <VStack spacing={4} align="stretch">
-                      <HStack justify="space-between" align="center">
-                        <FormLabel
-                          color="gray.700"
-                          fontWeight="semibold"
-                          fontSize="md"
-                          mb={0}
-                        >
-                          🗣️ Additional Languages
-                        </FormLabel>
+                <Card
+                  bg="white"
+                  shadow="md"
+                  borderRadius="lg"
+                  border="1px solid"
+                  borderColor="gray.200"
+                  _hover={{ shadow: "lg", borderColor: "blue.200" }}
+                  transition="all 0.2s"
+                >
+                  <CardBody p={{ base: 4, md: 6 }}>
+                    <VStack spacing={{ base: 4, md: 5 }} align="stretch">
+                      {/* Header Section */}
+                      <VStack spacing={3} align="stretch">
+                        <HStack spacing={3} align="center">
+                          <Box
+                            bg="green.50"
+                            p={2}
+                            borderRadius="lg"
+                            border="1px solid"
+                            borderColor="green.200"
+                          >
+                            <Icon
+                              as={FaComments}
+                              color="green.500"
+                              boxSize={5}
+                            />
+                          </Box>
+                          <Box flex={1}>
+                            <Text
+                              fontSize={{ base: "md", md: "lg" }}
+                              fontWeight="bold"
+                              color="gray.800"
+                              mb={1}
+                            >
+                              Additional Languages
+                            </Text>
+                            <Text
+                              fontSize={{ base: "xs", md: "sm" }}
+                              color="gray.600"
+                            >
+                              Add other languages you speak and their
+                              proficiency levels
+                            </Text>
+                          </Box>
+                        </HStack>
                         <Button
-                          size="sm"
+                          size={{ base: "md", md: "sm" }}
                           leftIcon={<FaPlus />}
                           colorScheme="blue"
-                          variant="outline"
+                          variant="solid"
                           onClick={() => {
                             updateData("otherLanguages", [
                               ...data.otherLanguages,
                               { language: "", level: "" },
                             ]);
                           }}
+                          alignSelf={{ base: "stretch", sm: "flex-start" }}
+                          borderRadius="full"
+                          minH={{ base: "48px", md: "40px" }}
+                          fontWeight="semibold"
                         >
                           Add Language
                         </Button>
-                      </HStack>
+                      </VStack>
 
                       {data.otherLanguages.length === 0 ? (
-                        <Box
-                          p={4}
-                          bg="gray.50"
-                          borderRadius="md"
+                        <Card
+                          bg="blue.50"
                           border="2px dashed"
-                          borderColor="gray.300"
-                          textAlign="center"
+                          borderColor="blue.200"
+                          borderRadius="xl"
                         >
-                          <Text color="gray.500" fontSize="sm">
-                            No additional languages added yet. Click &quot;Add
-                            Language&quot; to get started.
-                          </Text>
-                        </Box>
+                          <CardBody p={{ base: 6, md: 8 }} textAlign="center">
+                            <VStack spacing={3}>
+                              <Box
+                                bg="blue.100"
+                                p={3}
+                                borderRadius="full"
+                                border="1px solid"
+                                borderColor="blue.300"
+                              >
+                                <Icon
+                                  as={FaGlobe}
+                                  color="blue.600"
+                                  boxSize={8}
+                                />
+                              </Box>
+                              <VStack spacing={1}>
+                                <Text
+                                  fontWeight="semibold"
+                                  fontSize={{ base: "sm", md: "md" }}
+                                  color="gray.700"
+                                >
+                                  No additional languages yet
+                                </Text>
+                                <Text
+                                  color="gray.600"
+                                  fontSize={{ base: "xs", md: "sm" }}
+                                >
+                                  Click &quot;Add Language&quot; above to
+                                  showcase your multilingual abilities
+                                </Text>
+                              </VStack>
+                            </VStack>
+                          </CardBody>
+                        </Card>
                       ) : (
                         <VStack spacing={3} align="stretch">
                           {data.otherLanguages.map((lang, index) => (
-                            <Box
+                            <Card
                               key={index}
-                              p={4}
-                              bg="gray.50"
-                              borderRadius="md"
+                              bg="white"
+                              borderRadius="lg"
                               border="1px solid"
                               borderColor="gray.200"
+                              shadow="sm"
+                              _hover={{ shadow: "md", borderColor: "blue.200" }}
+                              transition="all 0.2s"
                             >
-                              <HStack spacing={3}>
-                                <Box flex={2}>
-                                  <Text
-                                    fontSize="xs"
-                                    color="gray.600"
-                                    mb={1}
-                                    fontWeight="medium"
-                                  >
-                                    Language
-                                  </Text>
-                                  <LanguageSelect
-                                    placeholder="Select language"
-                                    value={lang.language}
-                                    onChange={(value) => {
-                                      const newLanguages = [
-                                        ...data.otherLanguages,
-                                      ];
-                                      newLanguages[index] = {
-                                        ...lang,
-                                        language: value,
-                                      };
-                                      updateData(
-                                        "otherLanguages",
-                                        newLanguages
-                                      );
-                                    }}
-                                  />
-                                </Box>
-                                <Box flex={1}>
-                                  <Text
-                                    fontSize="xs"
-                                    color="gray.600"
-                                    mb={1}
-                                    fontWeight="medium"
-                                  >
-                                    Proficiency Level
-                                  </Text>
-                                  <Select
-                                    placeholder="Level"
-                                    value={lang.level}
-                                    bg="white"
-                                    borderColor="gray.300"
-                                    _hover={{ borderColor: "gray.400" }}
-                                    _focus={{
-                                      borderColor: "blue.500",
-                                      boxShadow: "0 0 0 1px #3182ce",
-                                    }}
-                                    onChange={(e) => {
-                                      const newLanguages = [
-                                        ...data.otherLanguages,
-                                      ];
-                                      newLanguages[index] = {
-                                        ...lang,
-                                        level: e.target.value,
-                                      };
-                                      updateData(
-                                        "otherLanguages",
-                                        newLanguages
-                                      );
-                                    }}
-                                  >
-                                    {languageLevels.map((level) => (
-                                      <option
-                                        key={level.value}
-                                        value={level.value}
-                                      >
-                                        {level.label}
-                                      </option>
-                                    ))}
-                                  </Select>
-                                </Box>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  colorScheme="red"
-                                  onClick={() => {
-                                    const newLanguages =
-                                      data.otherLanguages.filter(
-                                        (_, i) => i !== index
-                                      );
-                                    updateData("otherLanguages", newLanguages);
-                                  }}
-                                  aria-label="Remove language"
+                              <CardBody p={{ base: 4, md: 5 }}>
+                                <VStack
+                                  spacing={{ base: 4, md: 0 }}
+                                  align="stretch"
                                 >
-                                  <FaTimes />
-                                </Button>
-                              </HStack>
-                            </Box>
+                                  {/* Header with language number and remove button */}
+                                  <HStack
+                                    justify="space-between"
+                                    align="center"
+                                    mb={{ base: 2, md: 3 }}
+                                  >
+                                    <HStack spacing={2}>
+                                      <Badge
+                                        colorScheme="blue"
+                                        size="sm"
+                                        borderRadius="full"
+                                        px={2}
+                                      >
+                                        #{index + 1}
+                                      </Badge>
+                                      <Text
+                                        fontSize={{ base: "sm", md: "md" }}
+                                        fontWeight="semibold"
+                                        color="gray.700"
+                                      >
+                                        Additional Language
+                                      </Text>
+                                    </HStack>
+                                    <Button
+                                      size="sm"
+                                      variant="ghost"
+                                      colorScheme="red"
+                                      onClick={() => {
+                                        const newLanguages =
+                                          data.otherLanguages.filter(
+                                            (_, i) => i !== index
+                                          );
+                                        updateData(
+                                          "otherLanguages",
+                                          newLanguages
+                                        );
+                                      }}
+                                      aria-label="Remove language"
+                                      borderRadius="full"
+                                      minW="auto"
+                                      h="32px"
+                                      w="32px"
+                                    >
+                                      <FaTimes size="14px" />
+                                    </Button>
+                                  </HStack>
+
+                                  {/* Language and proficiency fields */}
+                                  <SimpleGrid
+                                    columns={{ base: 1, md: 2 }}
+                                    spacing={{ base: 4, md: 4 }}
+                                  >
+                                    <Box>
+                                      <FormLabel
+                                        fontSize={{ base: "sm", md: "sm" }}
+                                        color="gray.700"
+                                        fontWeight="semibold"
+                                        mb={2}
+                                      >
+                                        <HStack spacing={2}>
+                                          <Icon
+                                            as={FaLanguage}
+                                            color="blue.500"
+                                            boxSize={4}
+                                          />
+                                          <Text>Language</Text>
+                                        </HStack>
+                                      </FormLabel>
+                                      <LanguageSelect
+                                        placeholder="Select language"
+                                        value={lang.language}
+                                        onChange={(value) => {
+                                          const newLanguages = [
+                                            ...data.otherLanguages,
+                                          ];
+                                          newLanguages[index] = {
+                                            ...lang,
+                                            language: value,
+                                          };
+                                          updateData(
+                                            "otherLanguages",
+                                            newLanguages
+                                          );
+                                        }}
+                                      />
+                                    </Box>
+                                    <Box>
+                                      <FormLabel
+                                        fontSize={{ base: "sm", md: "sm" }}
+                                        color="gray.700"
+                                        fontWeight="semibold"
+                                        mb={2}
+                                      >
+                                        <HStack spacing={2}>
+                                          <Icon
+                                            as={FaChartBar}
+                                            color="green.500"
+                                            boxSize={4}
+                                          />
+                                          <Text>Proficiency Level</Text>
+                                        </HStack>
+                                      </FormLabel>
+                                      <ProficiencySelect
+                                        placeholder="Select proficiency level"
+                                        value={lang.level}
+                                        onChange={(value) => {
+                                          const newLanguages = [
+                                            ...data.otherLanguages,
+                                          ];
+                                          newLanguages[index] = {
+                                            ...lang,
+                                            level: value,
+                                          };
+                                          updateData(
+                                            "otherLanguages",
+                                            newLanguages
+                                          );
+                                        }}
+                                      />
+                                    </Box>
+                                  </SimpleGrid>
+                                </VStack>
+                              </CardBody>
+                            </Card>
                           ))}
                         </VStack>
                       )}
@@ -1583,6 +2198,8 @@ export default function TeacherApplication() {
                   updateData("teachingExperience", e.target.value)
                 }
                 rows={4}
+                fontSize={{ base: "16px", md: "14px" }}
+                size={{ base: "lg", md: "md" }}
               />
               <FormErrorMessage>{errors.teachingExperience}</FormErrorMessage>
             </FormControl>
@@ -1837,13 +2454,15 @@ export default function TeacherApplication() {
   };
 
   return (
-    <Container maxW="4xl" py={8}>
-      <VStack spacing={8}>
+    <Container maxW="4xl" py={{ base: 4, md: 8 }} px={{ base: 4, md: 6 }}>
+      <VStack spacing={{ base: 6, md: 8 }}>
         <Box textAlign="center">
-          <Heading size="lg" mb={2}>
+          <Heading size={{ base: "md", md: "lg" }} mb={2}>
             Teacher Application
           </Heading>
-          <Text color="gray.600">Join our community of Swahili educators</Text>
+          <Text color="gray.600" fontSize={{ base: "sm", md: "md" }}>
+            Join our community of Swahili educators
+          </Text>
         </Box>
 
         <Box w="full">
@@ -1886,7 +2505,9 @@ export default function TeacherApplication() {
         <Progress value={(activeStep / (steps.length - 1)) * 100} w="full" />
 
         <Card w="full" bg={cardBg} border="1px" borderColor={borderColor}>
-          <CardBody p={{ base: 4, md: 8 }}>{renderStepContent()}</CardBody>
+          <CardBody p={{ base: 3, sm: 4, md: 8 }}>
+            {renderStepContent()}
+          </CardBody>
         </Card>
 
         {/* Navigation */}
