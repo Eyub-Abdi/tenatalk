@@ -32,6 +32,12 @@ import {
   CardBody,
   Badge,
   Icon,
+  Divider,
+  Flex,
+  Switch,
+  Radio,
+  RadioGroup,
+  Link,
 } from "@chakra-ui/react";
 import {
   FaGraduationCap,
@@ -41,6 +47,9 @@ import {
   FaVideo,
   FaDollarSign,
   FaCheckCircle,
+  FaPlus,
+  FaTimes,
+  FaCamera,
 } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -59,15 +68,37 @@ interface TeacherApplicationData {
   teacherType: "community" | "professional" | "";
 
   // Step 1: Personal Info
+  // 2.1 Basic Information
+  displayName: string;
+  videoPlayform: string;
+
+  // Zoom specific fields
+  zoomMeetingLink: string;
+  zoomMeetingId: string;
+  zoomPasscode: string;
+
+  // Google Meet specific fields
+  googleMeetLink: string;
+
+  from: string; // Country of origin
+  livingIn: string; // Current country  // 2.2 Private Information
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  country: string;
-  city: string;
   dateOfBirth: string;
+  gender: "male" | "female" | "other" | "";
+  streetAddress: string;
+  city: string;
+  country: string;
+
+  // 2.3 Language Skills
   nativeLanguage: string;
-  otherLanguages: string[];
+  otherLanguages: { language: string; level: string }[];
+
+  // 2.4 Profile Photo
+  profilePhoto: File | null;
+  photoAgreement: boolean;
 
   // Step 2: Teaching Experience
   teachingExperience: string;
@@ -91,22 +122,51 @@ interface TeacherApplicationData {
 
 const initialData: TeacherApplicationData = {
   teacherType: "",
+
+  // Basic Information
+  displayName: "",
+  videoPlayform: "italki Classroom",
+
+  // Zoom fields
+  zoomMeetingLink: "",
+  zoomMeetingId: "",
+  zoomPasscode: "",
+
+  // Google Meet fields
+  googleMeetLink: "",
+
+  from: "",
+  livingIn: "", // Private Information
   firstName: "",
   lastName: "",
   email: "",
   phone: "",
-  country: "",
-  city: "",
   dateOfBirth: "",
+  gender: "",
+  streetAddress: "",
+  city: "",
+  country: "",
+
+  // Language Skills
   nativeLanguage: "",
   otherLanguages: [],
+
+  // Profile Photo
+  profilePhoto: null,
+  photoAgreement: false,
+
+  // Teaching Experience
   teachingExperience: "",
   education: "",
   certifications: "",
   specialties: [],
   teachingStyle: "",
+
+  // Video Introduction
   videoFile: null,
   introText: "",
+
+  // Availability
   hourlyRate: 15,
   availability: [],
   timezone: "",
@@ -131,6 +191,33 @@ const countries = [
   { name: "Germany", flag: "🇩🇪", code: "DE" },
   { name: "France", flag: "🇫🇷", code: "FR" },
   { name: "Other", flag: "🌍", code: "OTHER" },
+];
+
+const languageLevels = [
+  { value: "native", label: "Native" },
+  { value: "c2", label: "C2 - Proficient" },
+  { value: "c1", label: "C1 - Advanced" },
+  { value: "b2", label: "B2 - Upper Intermediate" },
+  { value: "b1", label: "B1 - Intermediate" },
+  { value: "a2", label: "A2 - Elementary" },
+  { value: "a1", label: "A1 - Beginner" },
+];
+
+const commonLanguages = [
+  "English",
+  "Swahili",
+  "Arabic",
+  "French",
+  "Spanish",
+  "Mandarin",
+  "Portuguese",
+  "German",
+  "Italian",
+  "Japanese",
+  "Korean",
+  "Russian",
+  "Hindi",
+  "Other",
 ];
 
 const specialties = [
@@ -185,7 +272,14 @@ export default function TeacherApplication() {
 
   const updateData = (
     field: keyof TeacherApplicationData,
-    value: string | number | boolean | string[] | File | null
+    value:
+      | string
+      | number
+      | boolean
+      | string[]
+      | File
+      | null
+      | { language: string; level: string }[]
   ) => {
     setData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
@@ -203,12 +297,28 @@ export default function TeacherApplication() {
           newErrors.teacherType = "Please select a teacher type";
         break;
       case 1: // Personal Info
+        // Basic Information
+        if (!data.displayName)
+          newErrors.displayName = "Display name is required";
+        if (!data.from) newErrors.from = "Country of origin is required";
+        if (!data.livingIn) newErrors.livingIn = "Current country is required";
+
+        // Private Information
         if (!data.firstName) newErrors.firstName = "First name is required";
         if (!data.lastName) newErrors.lastName = "Last name is required";
-        if (!data.email) newErrors.email = "Email is required";
-        if (!data.country) newErrors.country = "Country is required";
+        if (!data.dateOfBirth)
+          newErrors.dateOfBirth = "Date of birth is required";
+        if (!data.gender) newErrors.gender = "Gender is required";
+
+        // Language Skills
         if (!data.nativeLanguage)
           newErrors.nativeLanguage = "Native language is required";
+
+        // Profile Photo
+        if (!data.profilePhoto)
+          newErrors.profilePhoto = "Profile photo is required";
+        if (!data.photoAgreement)
+          newErrors.photoAgreement = "You must agree to the photo requirements";
         break;
       case 2: // Teaching Experience
         if (!data.teachingExperience)
@@ -669,90 +779,500 @@ export default function TeacherApplication() {
 
       case 1:
         return (
-          <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
-            <FormControl isInvalid={!!errors.firstName}>
-              <FormLabel>First Name</FormLabel>
-              <Input
-                value={data.firstName}
-                onChange={(e) => updateData("firstName", e.target.value)}
-              />
-              <FormErrorMessage>{errors.firstName}</FormErrorMessage>
-            </FormControl>
+          <VStack spacing={8} align="stretch">
+            {/* 2.1 Basic Information */}
+            <Box>
+              <VStack spacing={4} align="stretch">
+                <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                  2.1 Basic Information
+                </Text>
 
-            <FormControl isInvalid={!!errors.lastName}>
-              <FormLabel>Last Name</FormLabel>
-              <Input
-                value={data.lastName}
-                onChange={(e) => updateData("lastName", e.target.value)}
-              />
-              <FormErrorMessage>{errors.lastName}</FormErrorMessage>
-            </FormControl>
+                <FormControl isInvalid={!!errors.displayName}>
+                  <FormLabel>Display Name</FormLabel>
+                  <Input
+                    placeholder="Ayub Abdi"
+                    value={data.displayName}
+                    onChange={(e) => updateData("displayName", e.target.value)}
+                  />
+                  <FormErrorMessage>{errors.displayName}</FormErrorMessage>
+                </FormControl>
 
-            <FormControl isInvalid={!!errors.email}>
-              <FormLabel>Email</FormLabel>
-              <Input
-                type="email"
-                value={data.email}
-                onChange={(e) => updateData("email", e.target.value)}
-              />
-              <FormErrorMessage>{errors.email}</FormErrorMessage>
-            </FormControl>
+                <FormControl>
+                  <FormLabel>Video Platform</FormLabel>
+                  <VStack spacing={3} align="stretch">
+                    {/* SalvatoreLingo Classroom */}
+                    <Box
+                      p={4}
+                      borderWidth={2}
+                      borderColor={
+                        data.videoPlayform === "italki Classroom"
+                          ? "blue.500"
+                          : "gray.200"
+                      }
+                      borderRadius="md"
+                      cursor="pointer"
+                      bg={
+                        data.videoPlayform === "italki Classroom"
+                          ? "blue.50"
+                          : "white"
+                      }
+                      onClick={() =>
+                        updateData("videoPlayform", "italki Classroom")
+                      }
+                    >
+                      <VStack align="start" spacing={2}>
+                        <HStack>
+                          <Switch
+                            isChecked={
+                              data.videoPlayform === "italki Classroom"
+                            }
+                            onChange={() =>
+                              updateData("videoPlayform", "italki Classroom")
+                            }
+                          />
+                          <Text fontWeight="semibold">
+                            SalvatoreLingo Classroom
+                          </Text>
+                          <Badge colorScheme="blue">Default</Badge>
+                        </HStack>
+                        <Text fontSize="sm" color="gray.600">
+                          SalvatoreLingo Classroom is our own integrated
+                          platform for hosting classes. Students can choose it
+                          as video platform when they book lessons.
+                        </Text>
+                      </VStack>
+                    </Box>
 
-            <FormControl>
-              <FormLabel>Phone Number</FormLabel>
-              <Input
-                value={data.phone}
-                onChange={(e) => updateData("phone", e.target.value)}
-              />
-            </FormControl>
+                    {/* Zoom */}
+                    <Box
+                      p={4}
+                      borderWidth={2}
+                      borderColor={
+                        data.videoPlayform === "zoom" ? "blue.500" : "gray.200"
+                      }
+                      borderRadius="md"
+                      cursor="pointer"
+                      bg={data.videoPlayform === "zoom" ? "blue.50" : "white"}
+                      onClick={() => updateData("videoPlayform", "zoom")}
+                    >
+                      <VStack align="start" spacing={3}>
+                        <HStack>
+                          <Switch
+                            isChecked={data.videoPlayform === "zoom"}
+                            onChange={() => updateData("videoPlayform", "zoom")}
+                          />
+                          <Text fontWeight="semibold">Zoom</Text>
+                        </HStack>
+                        {data.videoPlayform === "zoom" && (
+                          <VStack
+                            spacing={3}
+                            w="full"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <Input
+                              placeholder="Enter Zoom meeting link"
+                              value={data.zoomMeetingLink}
+                              onChange={(e) =>
+                                updateData("zoomMeetingLink", e.target.value)
+                              }
+                            />
+                            <SimpleGrid columns={2} spacing={3} w="full">
+                              <Input
+                                placeholder="Meeting ID"
+                                value={data.zoomMeetingId}
+                                onChange={(e) =>
+                                  updateData("zoomMeetingId", e.target.value)
+                                }
+                              />
+                              <Input
+                                placeholder="Passcode"
+                                value={data.zoomPasscode}
+                                onChange={(e) =>
+                                  updateData("zoomPasscode", e.target.value)
+                                }
+                              />
+                            </SimpleGrid>
+                          </VStack>
+                        )}
+                      </VStack>
+                    </Box>
 
-            <FormControl isInvalid={!!errors.country}>
-              <FormLabel>Country</FormLabel>
-              <Select
-                placeholder="Select country"
-                value={data.country}
-                onChange={(e) => updateData("country", e.target.value)}
-              >
-                {countries.map((country) => (
-                  <option key={country.code} value={country.name}>
-                    {country.flag} {country.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.country}</FormErrorMessage>
-            </FormControl>
+                    {/* Google Meet */}
+                    <Box
+                      p={4}
+                      borderWidth={2}
+                      borderColor={
+                        data.videoPlayform === "google-meet"
+                          ? "blue.500"
+                          : "gray.200"
+                      }
+                      borderRadius="md"
+                      cursor="pointer"
+                      bg={
+                        data.videoPlayform === "google-meet"
+                          ? "blue.50"
+                          : "white"
+                      }
+                      onClick={() => updateData("videoPlayform", "google-meet")}
+                    >
+                      <VStack align="start" spacing={3}>
+                        <HStack>
+                          <Switch
+                            isChecked={data.videoPlayform === "google-meet"}
+                            onChange={() =>
+                              updateData("videoPlayform", "google-meet")
+                            }
+                          />
+                          <Text fontWeight="semibold">Google Meet</Text>
+                        </HStack>
+                        {data.videoPlayform === "google-meet" && (
+                          <Input
+                            placeholder="Enter Google Meet link"
+                            value={data.googleMeetLink}
+                            onChange={(e) =>
+                              updateData("googleMeetLink", e.target.value)
+                            }
+                            onClick={(e) => e.stopPropagation()}
+                          />
+                        )}
+                      </VStack>
+                    </Box>
+                  </VStack>
+                </FormControl>
 
-            <FormControl>
-              <FormLabel>City</FormLabel>
-              <Input
-                value={data.city}
-                onChange={(e) => updateData("city", e.target.value)}
-              />
-            </FormControl>
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  <FormControl isInvalid={!!errors.from}>
+                    <FormLabel>
+                      From
+                      <Text fontSize="xs" color="gray.500" mt={1}>
+                        Note: You can&apos;t change key information such as
+                        where you are from once you have finished onboarding.
+                      </Text>
+                    </FormLabel>
+                    <Select
+                      placeholder="Select your country of origin"
+                      value={data.from}
+                      onChange={(e) => updateData("from", e.target.value)}
+                    >
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.name}>
+                          {country.flag} {country.name}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormErrorMessage>{errors.from}</FormErrorMessage>
+                  </FormControl>
 
-            <FormControl isInvalid={!!errors.nativeLanguage}>
-              <FormLabel>Native Language</FormLabel>
-              <Select
-                placeholder="Select native language"
-                value={data.nativeLanguage}
-                onChange={(e) => updateData("nativeLanguage", e.target.value)}
-              >
-                <option value="Swahili">Swahili</option>
-                <option value="English">English</option>
-                <option value="Other">Other</option>
-              </Select>
-              <FormErrorMessage>{errors.nativeLanguage}</FormErrorMessage>
-            </FormControl>
+                  <FormControl isInvalid={!!errors.livingIn}>
+                    <FormLabel>Living in</FormLabel>
+                    <Select
+                      placeholder="Select where you currently live"
+                      value={data.livingIn}
+                      onChange={(e) => updateData("livingIn", e.target.value)}
+                    >
+                      {countries.map((country) => (
+                        <option key={country.code} value={country.name}>
+                          {country.flag} {country.name}
+                        </option>
+                      ))}
+                    </Select>
+                    <FormErrorMessage>{errors.livingIn}</FormErrorMessage>
+                  </FormControl>
+                </SimpleGrid>
+              </VStack>
+            </Box>
 
-            <FormControl>
-              <FormLabel>Date of Birth</FormLabel>
-              <Input
-                type="date"
-                value={data.dateOfBirth}
-                onChange={(e) => updateData("dateOfBirth", e.target.value)}
-              />
-            </FormControl>
-          </SimpleGrid>
+            <Divider />
+
+            {/* 2.2 Private Information */}
+            <Box>
+              <VStack spacing={4} align="stretch">
+                <VStack spacing={2} align="start">
+                  <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                    2.2 Private
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Please make sure your information is identical to your
+                    government-issued ID.{" "}
+                    <Link color="blue.500" href="#" textDecoration="underline">
+                      Learn more
+                    </Link>
+                  </Text>
+                  <Text fontSize="xs" color="orange.500">
+                    Note: You can&apos;t change key information such as your
+                    name, birthday, and gender once you have finished
+                    onboarding.
+                  </Text>
+                </VStack>
+
+                <SimpleGrid columns={{ base: 1, md: 2 }} spacing={4}>
+                  <FormControl isInvalid={!!errors.firstName}>
+                    <FormLabel>First Name</FormLabel>
+                    <Input
+                      placeholder="AYUB"
+                      value={data.firstName}
+                      onChange={(e) => updateData("firstName", e.target.value)}
+                    />
+                    <FormErrorMessage>{errors.firstName}</FormErrorMessage>
+                  </FormControl>
+
+                  <FormControl isInvalid={!!errors.lastName}>
+                    <FormLabel>Last Name</FormLabel>
+                    <Input
+                      placeholder="ABDI"
+                      value={data.lastName}
+                      onChange={(e) => updateData("lastName", e.target.value)}
+                    />
+                    <FormErrorMessage>{errors.lastName}</FormErrorMessage>
+                  </FormControl>
+
+                  <FormControl isInvalid={!!errors.dateOfBirth}>
+                    <FormLabel>Birthday</FormLabel>
+                    <Input
+                      type="date"
+                      value={data.dateOfBirth}
+                      onChange={(e) =>
+                        updateData("dateOfBirth", e.target.value)
+                      }
+                    />
+                    <FormErrorMessage>{errors.dateOfBirth}</FormErrorMessage>
+                  </FormControl>
+
+                  <FormControl isInvalid={!!errors.gender}>
+                    <FormLabel>Gender</FormLabel>
+                    <RadioGroup
+                      value={data.gender}
+                      onChange={(value) => updateData("gender", value)}
+                    >
+                      <HStack spacing={6}>
+                        <Radio value="male">Male</Radio>
+                        <Radio value="female">Female</Radio>
+                        <Radio value="other">Other</Radio>
+                      </HStack>
+                    </RadioGroup>
+                    <FormErrorMessage>{errors.gender}</FormErrorMessage>
+                  </FormControl>
+                </SimpleGrid>
+
+                <FormControl>
+                  <FormLabel>Street Address</FormLabel>
+                  <Input
+                    placeholder="Jumbi"
+                    value={data.streetAddress}
+                    onChange={(e) =>
+                      updateData("streetAddress", e.target.value)
+                    }
+                  />
+                </FormControl>
+              </VStack>
+            </Box>
+
+            <Divider />
+
+            {/* 2.3 Language Skills */}
+            <Box>
+              <VStack spacing={4} align="stretch">
+                <VStack spacing={2} align="start">
+                  <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                    2.3 Language Skills
+                  </Text>
+                  <Text fontSize="sm" color="gray.600">
+                    Please check that your listed languages and levels are
+                    accurate. You will be able to set any language that is
+                    listed as native or C2 as a teaching language.
+                    SalvatoreLingo uses the Common European Framework of
+                    Reference for Languages (CEFR) for displaying language
+                    levels.{" "}
+                    <Link color="blue.500" href="#" textDecoration="underline">
+                      Learn more
+                    </Link>
+                  </Text>
+                </VStack>
+
+                <FormControl isInvalid={!!errors.nativeLanguage}>
+                  <FormLabel>Native Language</FormLabel>
+                  <Select
+                    placeholder="Select your native language"
+                    value={data.nativeLanguage}
+                    onChange={(e) =>
+                      updateData("nativeLanguage", e.target.value)
+                    }
+                  >
+                    {commonLanguages.map((language) => (
+                      <option key={language} value={language}>
+                        {language}
+                      </option>
+                    ))}
+                  </Select>
+                  <FormErrorMessage>{errors.nativeLanguage}</FormErrorMessage>
+                </FormControl>
+
+                <Box>
+                  <FormLabel>Additional Languages</FormLabel>
+                  <VStack spacing={3} align="stretch">
+                    {data.otherLanguages.map((lang, index) => (
+                      <HStack key={index} spacing={2}>
+                        <Select
+                          placeholder="Select language"
+                          value={lang.language}
+                          onChange={(e) => {
+                            const newLanguages = [...data.otherLanguages];
+                            newLanguages[index] = {
+                              ...lang,
+                              language: e.target.value,
+                            };
+                            updateData("otherLanguages", newLanguages);
+                          }}
+                          flex={2}
+                        >
+                          {commonLanguages.map((language) => (
+                            <option key={language} value={language}>
+                              {language}
+                            </option>
+                          ))}
+                        </Select>
+                        <Select
+                          placeholder="Level"
+                          value={lang.level}
+                          onChange={(e) => {
+                            const newLanguages = [...data.otherLanguages];
+                            newLanguages[index] = {
+                              ...lang,
+                              level: e.target.value,
+                            };
+                            updateData("otherLanguages", newLanguages);
+                          }}
+                          flex={1}
+                        >
+                          {languageLevels.map((level) => (
+                            <option key={level.value} value={level.value}>
+                              {level.label}
+                            </option>
+                          ))}
+                        </Select>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          colorScheme="red"
+                          onClick={() => {
+                            const newLanguages = data.otherLanguages.filter(
+                              (_, i) => i !== index
+                            );
+                            updateData("otherLanguages", newLanguages);
+                          }}
+                        >
+                          <FaTimes />
+                        </Button>
+                      </HStack>
+                    ))}
+                    <Button
+                      variant="outline"
+                      leftIcon={<FaPlus />}
+                      size="sm"
+                      onClick={() => {
+                        updateData("otherLanguages", [
+                          ...data.otherLanguages,
+                          { language: "", level: "" },
+                        ]);
+                      }}
+                    >
+                      Add another language
+                    </Button>
+                  </VStack>
+                </Box>
+              </VStack>
+            </Box>
+
+            <Divider />
+
+            {/* 2.4 Profile Photo */}
+            <Box>
+              <VStack spacing={4} align="stretch">
+                <Text fontSize="xl" fontWeight="bold" color="gray.800">
+                  2.4 My teacher profile photo
+                </Text>
+
+                <Box
+                  p={6}
+                  borderWidth={2}
+                  borderColor="gray.200"
+                  borderRadius="md"
+                  borderStyle="dashed"
+                  textAlign="center"
+                >
+                  <VStack spacing={4}>
+                    <FaCamera size="48px" color="#A0AEC0" />
+                    <VStack spacing={2}>
+                      <Text fontWeight="semibold">Edit Profile Photo</Text>
+                      <VStack spacing={1} fontSize="sm" color="gray.600">
+                        <Text>At least 250*250 pixels</Text>
+                        <Text>JPG, PNG and BMP formats only</Text>
+                        <Text>Maximum size of 2MB</Text>
+                        <Link color="blue.500" textDecoration="underline">
+                          More Requirements
+                        </Link>
+                      </VStack>
+                    </VStack>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        updateData("profilePhoto", file);
+                      }}
+                      display="none"
+                      id="profile-photo-upload"
+                    />
+                    <Button
+                      as="label"
+                      htmlFor="profile-photo-upload"
+                      colorScheme="blue"
+                      cursor="pointer"
+                    >
+                      {data.profilePhoto ? "Change Photo" : "Choose a Photo"}
+                    </Button>
+                    {data.profilePhoto && (
+                      <Text fontSize="sm" color="green.600">
+                        ✓ {data.profilePhoto.name}
+                      </Text>
+                    )}
+                  </VStack>
+                </Box>
+
+                <Alert status="info" borderRadius="md">
+                  <AlertIcon />
+                  <VStack spacing={2} align="start" fontSize="sm">
+                    <Text fontWeight="semibold">
+                      Your photo has to respect the following characteristics:
+                    </Text>
+                    <VStack spacing={1} align="start" pl={4}>
+                      <Text>• does not show other people</Text>
+                      <Text>• is not too close or too far away</Text>
+                      <Text>• shows my eyes and face clearly</Text>
+                      <Text>• is clear and has good lighting</Text>
+                      <Text>• is friendly and personable</Text>
+                    </VStack>
+                  </VStack>
+                </Alert>
+
+                <FormControl isInvalid={!!errors.photoAgreement}>
+                  <Checkbox
+                    isChecked={data.photoAgreement}
+                    onChange={(e) =>
+                      updateData("photoAgreement", e.target.checked)
+                    }
+                  >
+                    <Text fontSize="sm">
+                      I&apos;m aware that if my profile photo does not respect
+                      the listed characteristics, my application to become a
+                      teacher on SalvatoreLingo could be rejected.
+                    </Text>
+                  </Checkbox>
+                  <FormErrorMessage>{errors.photoAgreement}</FormErrorMessage>
+                </FormControl>
+              </VStack>
+            </Box>
+          </VStack>
         );
 
       case 2:
