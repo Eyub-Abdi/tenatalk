@@ -33,7 +33,6 @@ import {
   Badge,
   Icon,
   Divider,
-  Flex,
   Switch,
   Radio,
   RadioGroup,
@@ -43,7 +42,6 @@ import {
   MenuList,
   MenuItem,
   Image,
-  useDisclosure,
 } from "@chakra-ui/react";
 import {
   FaGraduationCap,
@@ -66,6 +64,8 @@ import {
   FaGlobe,
   FaLanguage,
   FaChartBar,
+  FaUpload,
+  FaImage,
 } from "react-icons/fa";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -227,7 +227,11 @@ const LanguageSelect = ({
               <Icon as={FaGlobe} color="gray.500" boxSize={4} />
             ) : (
               <Image
-                src={getLanguageFlagUrl(selectedLanguage.code)}
+                src={
+                  getLanguageFlagUrl(selectedLanguage.code) as
+                    | string
+                    | undefined
+                }
                 alt={`${selectedLanguage.name} flag`}
                 w="20px"
                 h="15px"
@@ -270,7 +274,7 @@ const LanguageSelect = ({
                 <Icon as={FaGlobe} color="gray.500" boxSize={4} />
               ) : (
                 <Image
-                  src={getLanguageFlagUrl(language.code)}
+                  src={getLanguageFlagUrl(language.code) as string | undefined}
                   alt={`${language.name} flag`}
                   w="20px"
                   h="15px"
@@ -1737,14 +1741,7 @@ export default function TeacherApplication() {
             <Divider />
 
             {/* 2.3 Language Skills */}
-            <Box
-              bg="gradient(135deg, blue.50 0%, purple.50 100%)"
-              p={{ base: 4, md: 6 }}
-              borderRadius="xl"
-              border="1px solid"
-              borderColor="blue.100"
-              shadow="lg"
-            >
+            <Box bg="gray.50" p={{ base: 4, md: 6 }} borderRadius="xl">
               <VStack spacing={{ base: 4, md: 6 }} align="stretch">
                 <VStack spacing={3} align="start">
                   <HStack spacing={{ base: 2, md: 3 }}>
@@ -1783,28 +1780,12 @@ export default function TeacherApplication() {
                   </Text>
                 </VStack>
 
-                <Card
-                  bg="white"
-                  shadow="md"
-                  borderRadius="lg"
-                  border="1px solid"
-                  borderColor="blue.100"
-                  _hover={{ shadow: "lg", borderColor: "blue.200" }}
-                  transition="all 0.2s"
-                >
+                <Card bg="white" borderRadius="lg">
                   <CardBody p={{ base: 4, md: 6 }}>
                     <FormControl isInvalid={!!errors.nativeLanguage}>
                       <VStack spacing={4} align="stretch">
                         <HStack spacing={3} align="center">
-                          <Box
-                            bg="blue.50"
-                            p={2}
-                            borderRadius="lg"
-                            border="1px solid"
-                            borderColor="blue.200"
-                          >
-                            <Icon as={FaStar} color="blue.500" boxSize={5} />
-                          </Box>
+                          <Icon as={FaStar} color="blue.500" boxSize={6} />
                           <Box>
                             <Text
                               fontSize={{ base: "md", md: "lg" }}
@@ -1837,33 +1818,13 @@ export default function TeacherApplication() {
                   </CardBody>
                 </Card>
 
-                <Card
-                  bg="white"
-                  shadow="md"
-                  borderRadius="lg"
-                  border="1px solid"
-                  borderColor="gray.200"
-                  _hover={{ shadow: "lg", borderColor: "blue.200" }}
-                  transition="all 0.2s"
-                >
+                <Card bg="white" borderRadius="lg">
                   <CardBody p={{ base: 4, md: 6 }}>
                     <VStack spacing={{ base: 4, md: 5 }} align="stretch">
                       {/* Header Section */}
                       <VStack spacing={3} align="stretch">
                         <HStack spacing={3} align="center">
-                          <Box
-                            bg="green.50"
-                            p={2}
-                            borderRadius="lg"
-                            border="1px solid"
-                            borderColor="green.200"
-                          >
-                            <Icon
-                              as={FaComments}
-                              color="green.500"
-                              boxSize={5}
-                            />
-                          </Box>
+                          <Icon as={FaComments} color="green.500" boxSize={6} />
                           <Box flex={1}>
                             <Text
                               fontSize={{ base: "md", md: "lg" }}
@@ -1903,59 +1864,38 @@ export default function TeacherApplication() {
                       </VStack>
 
                       {data.otherLanguages.length === 0 ? (
-                        <Card
-                          bg="blue.50"
-                          border="2px dashed"
-                          borderColor="blue.200"
+                        <Box
+                          bg="gray.100"
                           borderRadius="xl"
+                          p={{ base: 6, md: 8 }}
+                          textAlign="center"
                         >
-                          <CardBody p={{ base: 6, md: 8 }} textAlign="center">
-                            <VStack spacing={3}>
-                              <Box
-                                bg="blue.100"
-                                p={3}
-                                borderRadius="full"
-                                border="1px solid"
-                                borderColor="blue.300"
+                          <VStack spacing={3}>
+                            <Box bg="gray.200" p={3} borderRadius="full">
+                              <Icon as={FaGlobe} color="gray.500" boxSize={8} />
+                            </Box>
+                            <VStack spacing={1}>
+                              <Text
+                                fontWeight="semibold"
+                                fontSize={{ base: "sm", md: "md" }}
+                                color="gray.700"
                               >
-                                <Icon
-                                  as={FaGlobe}
-                                  color="blue.600"
-                                  boxSize={8}
-                                />
-                              </Box>
-                              <VStack spacing={1}>
-                                <Text
-                                  fontWeight="semibold"
-                                  fontSize={{ base: "sm", md: "md" }}
-                                  color="gray.700"
-                                >
-                                  No additional languages yet
-                                </Text>
-                                <Text
-                                  color="gray.600"
-                                  fontSize={{ base: "xs", md: "sm" }}
-                                >
-                                  Click &quot;Add Language&quot; above to
-                                  showcase your multilingual abilities
-                                </Text>
-                              </VStack>
+                                No additional languages yet
+                              </Text>
+                              <Text
+                                color="gray.600"
+                                fontSize={{ base: "xs", md: "sm" }}
+                              >
+                                Click &quot;Add Language&quot; above to showcase
+                                your multilingual abilities
+                              </Text>
                             </VStack>
-                          </CardBody>
-                        </Card>
+                          </VStack>
+                        </Box>
                       ) : (
                         <VStack spacing={3} align="stretch">
                           {data.otherLanguages.map((lang, index) => (
-                            <Card
-                              key={index}
-                              bg="white"
-                              borderRadius="lg"
-                              border="1px solid"
-                              borderColor="gray.200"
-                              shadow="sm"
-                              _hover={{ shadow: "md", borderColor: "blue.200" }}
-                              transition="all 0.2s"
-                            >
+                            <Card key={index} bg="gray.50" borderRadius="lg">
                               <CardBody p={{ base: 4, md: 5 }}>
                                 <VStack
                                   spacing={{ base: 4, md: 0 }}
@@ -2097,92 +2037,236 @@ export default function TeacherApplication() {
             <Divider />
 
             {/* 2.4 Profile Photo */}
-            <Box>
-              <VStack spacing={4} align="stretch">
-                <Text fontSize="xl" fontWeight="bold" color="gray.800">
-                  2.4 My teacher profile photo
-                </Text>
+            <Card bg="white" borderRadius="xl">
+              <CardBody p={{ base: 5, md: 6 }}>
+                <VStack spacing={{ base: 5, md: 6 }} align="stretch">
+                  {/* Header */}
+                  <HStack spacing={3} align="center">
+                    <Icon as={FaCamera} color="purple.500" boxSize={6} />
+                    <Box>
+                      <Text
+                        fontSize={{ base: "lg", md: "xl" }}
+                        fontWeight="bold"
+                        color="gray.800"
+                      >
+                        2.4 My Teacher Profile Photo
+                      </Text>
+                      <Text
+                        fontSize={{ base: "sm", md: "md" }}
+                        color="gray.600"
+                      >
+                        Upload a professional photo that represents you
+                      </Text>
+                    </Box>
+                  </HStack>
 
-                <Box
-                  p={6}
-                  borderWidth={2}
-                  borderColor="gray.200"
-                  borderRadius="md"
-                  borderStyle="dashed"
-                  textAlign="center"
-                >
-                  <VStack spacing={4}>
-                    <FaCamera size="48px" color="#A0AEC0" />
-                    <VStack spacing={2}>
-                      <Text fontWeight="semibold">Edit Profile Photo</Text>
-                      <VStack spacing={1} fontSize="sm" color="gray.600">
-                        <Text>At least 250*250 pixels</Text>
-                        <Text>JPG, PNG and BMP formats only</Text>
-                        <Text>Maximum size of 2MB</Text>
-                        <Link color="blue.500" textDecoration="underline">
-                          More Requirements
-                        </Link>
+                  {/* Photo Upload Section */}
+                  <SimpleGrid
+                    columns={{ base: 1, lg: 2 }}
+                    spacing={{ base: 5, md: 6 }}
+                  >
+                    {/* Preview Section */}
+                    <VStack spacing={4} align="center">
+                      <Text
+                        fontWeight="semibold"
+                        color="gray.700"
+                        alignSelf="flex-start"
+                      >
+                        Photo Preview
+                      </Text>
+
+                      {/* Circle Preview */}
+                      <Box position="relative">
+                        <Box
+                          w={{ base: "180px", md: "200px" }}
+                          h={{ base: "180px", md: "200px" }}
+                          borderRadius="full"
+                          border="3px solid"
+                          borderColor={
+                            data.profilePhoto ? "green.300" : "gray.300"
+                          }
+                          overflow="hidden"
+                          bg="gray.50"
+                          position="relative"
+                        >
+                          {data.profilePhoto ? (
+                            <Image
+                              src={URL.createObjectURL(data.profilePhoto)}
+                              alt="Profile preview"
+                              w="100%"
+                              h="100%"
+                              objectFit="cover"
+                            />
+                          ) : (
+                            <VStack
+                              spacing={3}
+                              justify="center"
+                              h="100%"
+                              color="gray.400"
+                            >
+                              <Icon as={FaUser} boxSize={12} />
+                              <Text fontSize="sm" textAlign="center" px={4}>
+                                Circle Preview
+                              </Text>
+                            </VStack>
+                          )}
+                        </Box>
+                      </Box>
+                    </VStack>
+
+                    {/* Upload Section */}
+                    <VStack spacing={4} align="stretch">
+                      <Text fontWeight="semibold" color="gray.700">
+                        Upload Requirements
+                      </Text>
+
+                      {/* Upload Area */}
+                      <Box
+                        p={{ base: 6, md: 8 }}
+                        borderWidth={2}
+                        borderColor={
+                          data.profilePhoto ? "green.200" : "gray.200"
+                        }
+                        borderRadius="xl"
+                        borderStyle="dashed"
+                        textAlign="center"
+                        bg={data.profilePhoto ? "green.50" : "gray.50"}
+                        transition="all 0.2s"
+                        _hover={{ borderColor: "blue.300", bg: "blue.50" }}
+                      >
+                        <VStack spacing={4}>
+                          <Icon
+                            as={data.profilePhoto ? FaCheckCircle : FaUpload}
+                            boxSize={12}
+                            color={data.profilePhoto ? "green.500" : "gray.400"}
+                          />
+                          <VStack spacing={2}>
+                            <Text
+                              fontWeight="semibold"
+                              color={
+                                data.profilePhoto ? "green.700" : "gray.700"
+                              }
+                            >
+                              {data.profilePhoto
+                                ? "Photo Uploaded!"
+                                : "Upload Your Photo"}
+                            </Text>
+                            {data.profilePhoto && (
+                              <Text
+                                fontSize="sm"
+                                color="green.600"
+                                fontWeight="medium"
+                              >
+                                {data.profilePhoto.name}
+                              </Text>
+                            )}
+                          </VStack>
+
+                          <Input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0] || null;
+                              updateData("profilePhoto", file);
+                            }}
+                            display="none"
+                            id="profile-photo-upload"
+                          />
+
+                          <Button
+                            as="label"
+                            htmlFor="profile-photo-upload"
+                            colorScheme={data.profilePhoto ? "green" : "blue"}
+                            variant={data.profilePhoto ? "outline" : "solid"}
+                            cursor="pointer"
+                            size={{ base: "md", md: "lg" }}
+                            minH={{ base: "48px", md: "auto" }}
+                          >
+                            {data.profilePhoto
+                              ? "Change Photo"
+                              : "Choose Photo"}
+                          </Button>
+                        </VStack>
+                      </Box>
+
+                      {/* Requirements List */}
+                      <Card
+                        bg="blue.50"
+                        border="1px solid"
+                        borderColor="blue.200"
+                      >
+                        <CardBody p={4}>
+                          <VStack spacing={3} align="start">
+                            <HStack spacing={2}>
+                              <Icon as={FaImage} color="blue.500" boxSize={4} />
+                              <Text
+                                fontWeight="semibold"
+                                color="blue.700"
+                                fontSize="sm"
+                              >
+                                Photo Requirements
+                              </Text>
+                            </HStack>
+                            <VStack
+                              spacing={1}
+                              align="start"
+                              fontSize="xs"
+                              color="gray.600"
+                            >
+                              <Text>• Minimum 250×250 pixels resolution</Text>
+                              <Text>• JPG, PNG, or BMP format only</Text>
+                              <Text>• Maximum file size: 2MB</Text>
+                              <Text>
+                                • Clear, well-lit, professional appearance
+                              </Text>
+                              <Link
+                                color="blue.600"
+                                textDecoration="underline"
+                                fontWeight="medium"
+                              >
+                                View detailed requirements →
+                              </Link>
+                            </VStack>
+                          </VStack>
+                        </CardBody>
+                      </Card>
+                    </VStack>
+                  </SimpleGrid>
+
+                  <Alert status="info" borderRadius="md">
+                    <AlertIcon />
+                    <VStack spacing={2} align="start" fontSize="sm">
+                      <Text fontWeight="semibold">
+                        Your photo has to respect the following characteristics:
+                      </Text>
+                      <VStack spacing={1} align="start" pl={4}>
+                        <Text>• does not show other people</Text>
+                        <Text>• is not too close or too far away</Text>
+                        <Text>• shows my eyes and face clearly</Text>
+                        <Text>• is clear and has good lighting</Text>
+                        <Text>• is friendly and personable</Text>
                       </VStack>
                     </VStack>
-                    <Input
-                      type="file"
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0] || null;
-                        updateData("profilePhoto", file);
-                      }}
-                      display="none"
-                      id="profile-photo-upload"
-                    />
-                    <Button
-                      as="label"
-                      htmlFor="profile-photo-upload"
-                      colorScheme="blue"
-                      cursor="pointer"
+                  </Alert>
+
+                  <FormControl isInvalid={!!errors.photoAgreement}>
+                    <Checkbox
+                      isChecked={data.photoAgreement}
+                      onChange={(e) =>
+                        updateData("photoAgreement", e.target.checked)
+                      }
                     >
-                      {data.profilePhoto ? "Change Photo" : "Choose a Photo"}
-                    </Button>
-                    {data.profilePhoto && (
-                      <Text fontSize="sm" color="green.600">
-                        ✓ {data.profilePhoto.name}
+                      <Text fontSize="sm">
+                        I&apos;m aware that if my profile photo does not respect
+                        the listed characteristics, my application to become a
+                        teacher on SalvatoreLingo could be rejected.
                       </Text>
-                    )}
-                  </VStack>
-                </Box>
-
-                <Alert status="info" borderRadius="md">
-                  <AlertIcon />
-                  <VStack spacing={2} align="start" fontSize="sm">
-                    <Text fontWeight="semibold">
-                      Your photo has to respect the following characteristics:
-                    </Text>
-                    <VStack spacing={1} align="start" pl={4}>
-                      <Text>• does not show other people</Text>
-                      <Text>• is not too close or too far away</Text>
-                      <Text>• shows my eyes and face clearly</Text>
-                      <Text>• is clear and has good lighting</Text>
-                      <Text>• is friendly and personable</Text>
-                    </VStack>
-                  </VStack>
-                </Alert>
-
-                <FormControl isInvalid={!!errors.photoAgreement}>
-                  <Checkbox
-                    isChecked={data.photoAgreement}
-                    onChange={(e) =>
-                      updateData("photoAgreement", e.target.checked)
-                    }
-                  >
-                    <Text fontSize="sm">
-                      I&apos;m aware that if my profile photo does not respect
-                      the listed characteristics, my application to become a
-                      teacher on SalvatoreLingo could be rejected.
-                    </Text>
-                  </Checkbox>
-                  <FormErrorMessage>{errors.photoAgreement}</FormErrorMessage>
-                </FormControl>
-              </VStack>
-            </Box>
+                    </Checkbox>
+                    <FormErrorMessage>{errors.photoAgreement}</FormErrorMessage>
+                  </FormControl>
+                </VStack>
+              </CardBody>
+            </Card>
           </VStack>
         );
 
