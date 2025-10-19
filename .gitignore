@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Builds
+dist/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+
+# Env
+.env*
+!.env.example
+
+# Tests coverage
+coverage/

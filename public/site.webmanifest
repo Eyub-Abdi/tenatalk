@@ -1,0 +1,12 @@
+{
+  "name": "SalvatoreLingo",
+  "short_name": "Lingo",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FF4438",
+  "description": "Learn Swahili through real tutors, immersive practice, and flexible lessons.",
+  "icons": [
+    { "src": "/favicon.svg", "sizes": "64x64", "type": "image/svg+xml" }
+  ]
+}

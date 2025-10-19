@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# Sitemap: Add when generated
+# Sitemap: https://example.com/sitemap.xml
