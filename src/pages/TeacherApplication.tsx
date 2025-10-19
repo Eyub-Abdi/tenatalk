@@ -2273,8 +2273,30 @@ export default function TeacherApplication() {
       case 2:
         return (
           <Stack spacing={6}>
+            <HStack
+              spacing={{ base: 2, md: 3 }}
+              align="center"
+              flexWrap="wrap"
+            >
+              <Badge
+                colorScheme="purple"
+                fontSize={{ base: "sm", md: "md" }}
+                px={{ base: 2, md: 3 }}
+                py={{ base: 1, md: 1.5 }}
+                borderRadius="full"
+              >
+                4
+              </Badge>
+              <Text
+                fontSize={{ base: "lg", md: "xl" }}
+                fontWeight="bold"
+                color="gray.800"
+                lineHeight={{ base: "1.2", md: "1.4" }}
+              >
+                Teaching Experience
+              </Text>
+            </HStack>
             <FormControl isInvalid={!!errors.teachingExperience}>
-              <FormLabel>Teaching Experience</FormLabel>
               <Textarea
                 placeholder="Describe your teaching experience, including years of experience, age groups taught, and teaching environments..."
                 value={data.teachingExperience}
@@ -2552,20 +2574,30 @@ export default function TeacherApplication() {
         <Box w="full">
           {/* Desktop Stepper */}
           <Box display={{ base: "none", md: "block" }}>
-            <Stepper index={activeStep} orientation="horizontal" size="sm">
+            <Stepper
+              index={activeStep}
+              orientation="horizontal"
+              size="sm"
+              w="full"
+              px={{ base: 0, md: 1 }}
+              ms={0}
+              me={0}
+            >
               {steps.map((step, index) => (
                 <Step key={index}>
-                  <StepIndicator>
-                    <StepStatus
-                      complete={<StepIcon />}
-                      incomplete={<StepNumber />}
-                      active={<StepNumber />}
-                    />
-                  </StepIndicator>
+                  <HStack spacing={2} align="center" flexWrap="nowrap">
+                    <StepIndicator>
+                      <StepStatus
+                        complete={<StepIcon />}
+                        incomplete={<StepNumber />}
+                        active={<StepNumber />}
+                      />
+                    </StepIndicator>
 
-                  <Box flexShrink="0">
-                    <StepTitle fontSize="sm">{step.title}</StepTitle>
-                  </Box>
+                    <StepTitle fontSize="sm" whiteSpace="nowrap">
+                      {step.title}
+                    </StepTitle>
+                  </HStack>
 
                   <StepSeparator />
                 </Step>
