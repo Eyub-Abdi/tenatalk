@@ -2273,11 +2273,7 @@ export default function TeacherApplication() {
       case 2:
         return (
           <Stack spacing={6}>
-            <HStack
-              spacing={{ base: 2, md: 3 }}
-              align="center"
-              flexWrap="wrap"
-            >
+            <HStack spacing={{ base: 2, md: 3 }} align="center" flexWrap="wrap">
               <Badge
                 colorScheme="purple"
                 fontSize={{ base: "sm", md: "md" }}
