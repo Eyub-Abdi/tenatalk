@@ -105,9 +105,12 @@ export default function Availability() {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const brandColor = useColorModeValue("#4299E1", "#63B3ED");
 
-  // Calculate today to make it the first column
-  const weekStartDate = useMemo(() => {
-    return new Date();
+  // Calculate the date for yesterday to make today the 2nd column
+  const getWeekStartDate = useMemo(() => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    return yesterday;
   }, []);
 
   useEffect(() => {
@@ -355,14 +358,7 @@ export default function Availability() {
             color: "gray.500",
           },
           "& .fc-timegrid-slot": {
-            height: "2rem",
-          },
-          "& .fc-timegrid-axis": {
-            width: "90px",
-            paddingRight: "16px",
-          },
-          "& .fc-timegrid-slot-label": {
-            paddingRight: "16px",
+            height: "3rem",
           },
           "& .fc-event": {
             cursor: "pointer",
@@ -384,12 +380,11 @@ export default function Availability() {
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
-          initialDate={weekStartDate}
-          firstDay={weekStartDate.getDay()}
+          initialDate={new Date()}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           slotMinTime={`${START_HOUR.toString().padStart(2, "0")}:00:00`}
           slotMaxTime={`${(END_HOUR + 1).toString().padStart(2, "0")}:00:00`}
@@ -400,8 +395,9 @@ export default function Availability() {
           eventClick={handleEventClick}
           events={events}
           height="auto"
-          slotDuration="00:30:00"
-          slotLabelInterval="00:30"
+          firstDay={1}
+          slotDuration="01:00:00"
+          slotLabelInterval="01:00"
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",

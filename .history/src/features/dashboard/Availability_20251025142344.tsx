@@ -355,14 +355,14 @@ export default function Availability() {
             color: "gray.500",
           },
           "& .fc-timegrid-slot": {
-            height: "2rem",
+            height: "1.5rem",
           },
           "& .fc-timegrid-axis": {
-            width: "90px",
-            paddingRight: "16px",
+            width: "80px",
+            paddingRight: "12px",
           },
           "& .fc-timegrid-slot-label": {
-            paddingRight: "16px",
+            paddingRight: "12px",
           },
           "& .fc-event": {
             cursor: "pointer",

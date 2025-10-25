@@ -1,0 +1,130 @@
+/* FullCalendar Base Styles */
+.fc {
+  direction: ltr;
+  text-align: left;
+}
+
+.fc-theme-standard td,
+.fc-theme-standard th {
+  border: 1px solid var(--fc-border-color, #ddd);
+}
+
+.fc .fc-button {
+  border-radius: 4px;
+  font-size: 14px;
+  padding: 0.4em 0.65em;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+.fc .fc-button:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:first-child) {
+  margin-left: -1px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+}
+
+.fc-direction-ltr .fc-button-group > .fc-button:not(:last-child) {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.fc-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+.fc-toolbar-title {
+  font-size: 1.5em;
+  font-weight: bold;
+  margin: 0;
+}
+
+.fc .fc-col-header-cell {
+  padding: 0.5em;
+  font-weight: bold;
+  text-align: center;
+}
+
+.fc .fc-daygrid-day,
+.fc .fc-timegrid-slot {
+  cursor: pointer;
+}
+
+.fc-event {
+  cursor: pointer;
+  border: 1px solid;
+  padding: 2px 4px;
+  margin-bottom: 1px;
+  font-size: 0.85em;
+  border-radius: 3px;
+}
+
+.fc-event:hover {
+  opacity: 0.8;
+}
+
+.fc-timegrid-slot-label {
+  text-align: right;
+  padding-right: 8px;
+  font-size: 0.85em;
+}
+
+.fc-scrollgrid {
+  border: 1px solid var(--fc-border-color, #ddd);
+  width: 100%;
+}
+
+.fc-scrollgrid-section > * {
+  border-top-width: 0;
+}
+
+.fc .fc-scrollgrid-section-header > * {
+  background: var(--fc-neutral-bg-color, #f9f9f9);
+}
+
+.fc .fc-timegrid-col {
+  position: relative;
+}
+
+.fc .fc-timegrid-axis {
+  text-align: right;
+  padding: 0 4px;
+}
+
+.fc .fc-daygrid-day-top {
+  display: flex;
+  justify-content: center;
+  padding: 4px;
+}
+
+.fc .fc-daygrid-day-number {
+  padding: 4px;
+}
+
+.fc-highlight {
+  background: rgba(188, 232, 241, 0.3);
+}
+
+.fc-h-event,
+.fc-v-event {
+  display: block;
+  background-color: #3788d8;
+  border-color: #3788d8;
+  color: #fff;
+}
+
+.fc-timegrid-event {
+  position: absolute;
+  border-radius: 3px;
+}
+
+.fc-day-today {
+  background-color: rgba(255, 220, 40, 0.15) !important;
+}

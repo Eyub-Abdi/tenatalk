@@ -358,7 +358,7 @@ export default function Availability() {
             height: "2rem",
           },
           "& .fc-timegrid-axis": {
-            width: "90px",
+            width: "100px",
             paddingRight: "16px",
           },
           "& .fc-timegrid-slot-label": {

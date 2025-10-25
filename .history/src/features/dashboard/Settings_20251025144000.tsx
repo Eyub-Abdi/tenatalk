@@ -78,11 +78,11 @@ export default function Settings() {
         </Text>
       </Box>
 
-      <Tabs colorScheme="brand" variant="soft-rounded">
+      <Tabs colorScheme="blue" variant="soft-rounded">
         <TabList gap={2}>
           <Tab
             _selected={{
-              bg: "brand.500",
+              bg: "blue.500",
               color: "white",
             }}
             fontSize="sm"
@@ -92,7 +92,7 @@ export default function Settings() {
           </Tab>
           <Tab
             _selected={{
-              bg: "brand.500",
+              bg: "blue.500",
               color: "white",
             }}
             fontSize="sm"
@@ -102,7 +102,7 @@ export default function Settings() {
           </Tab>
           <Tab
             _selected={{
-              bg: "brand.500",
+              bg: "blue.500",
               color: "white",
             }}
             fontSize="sm"
@@ -202,7 +202,7 @@ export default function Settings() {
 
                   <Button
                     leftIcon={<FiSave />}
-                    colorScheme="brand"
+                    colorScheme="blue"
                     size="md"
                     alignSelf="flex-start"
                     onClick={handleSaveProfile}
@@ -255,7 +255,9 @@ export default function Settings() {
                           <option value="America/Los_Angeles">
                             Pacific Time (GMT-8)
                           </option>
-                          <option value="Europe/London">London (GMT+0)</option>
+                          <option value="Europe/London">
+                            London (GMT+0)
+                          </option>
                           <option value="Europe/Paris">Paris (GMT+1)</option>
                           <option value="Asia/Tokyo">Tokyo (GMT+9)</option>
                         </Select>
@@ -291,11 +293,7 @@ export default function Settings() {
                       Security
                     </Heading>
                     <Stack spacing={3}>
-                      <Button
-                        variant="outline"
-                        size="md"
-                        alignSelf="flex-start"
-                      >
+                      <Button variant="outline" size="md" alignSelf="flex-start">
                         Change Password
                       </Button>
                       <Button
@@ -311,7 +309,7 @@ export default function Settings() {
 
                   <Button
                     leftIcon={<FiSave />}
-                    colorScheme="brand"
+                    colorScheme="blue"
                     size="md"
                     alignSelf="flex-start"
                     onClick={handleSaveProfile}
@@ -357,7 +355,7 @@ export default function Settings() {
                               emailNotifications: e.target.checked,
                             })
                           }
-                          colorScheme="brand"
+                          colorScheme="blue"
                           size="lg"
                         />
                       </HStack>
@@ -381,7 +379,7 @@ export default function Settings() {
                               smsNotifications: e.target.checked,
                             })
                           }
-                          colorScheme="brand"
+                          colorScheme="blue"
                           size="lg"
                         />
                       </HStack>
@@ -405,7 +403,7 @@ export default function Settings() {
                               marketingEmails: e.target.checked,
                             })
                           }
-                          colorScheme="brand"
+                          colorScheme="blue"
                           size="lg"
                         />
                       </HStack>
@@ -414,7 +412,7 @@ export default function Settings() {
 
                   <Button
                     leftIcon={<FiSave />}
-                    colorScheme="brand"
+                    colorScheme="blue"
                     size="md"
                     alignSelf="flex-start"
                     onClick={handleSavePreferences}

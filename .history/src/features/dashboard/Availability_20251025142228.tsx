@@ -355,14 +355,7 @@ export default function Availability() {
             color: "gray.500",
           },
           "& .fc-timegrid-slot": {
-            height: "2rem",
-          },
-          "& .fc-timegrid-axis": {
-            width: "90px",
-            paddingRight: "16px",
-          },
-          "& .fc-timegrid-slot-label": {
-            paddingRight: "16px",
+            height: "1.5rem",
           },
           "& .fc-event": {
             cursor: "pointer",

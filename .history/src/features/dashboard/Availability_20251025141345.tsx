@@ -355,14 +355,7 @@ export default function Availability() {
             color: "gray.500",
           },
           "& .fc-timegrid-slot": {
-            height: "2rem",
-          },
-          "& .fc-timegrid-axis": {
-            width: "90px",
-            paddingRight: "16px",
-          },
-          "& .fc-timegrid-slot-label": {
-            paddingRight: "16px",
+            height: "3rem",
           },
           "& .fc-event": {
             cursor: "pointer",
@@ -389,7 +382,7 @@ export default function Availability() {
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           slotMinTime={`${START_HOUR.toString().padStart(2, "0")}:00:00`}
           slotMaxTime={`${(END_HOUR + 1).toString().padStart(2, "0")}:00:00`}
@@ -400,8 +393,8 @@ export default function Availability() {
           eventClick={handleEventClick}
           events={events}
           height="auto"
-          slotDuration="00:30:00"
-          slotLabelInterval="00:30"
+          slotDuration="01:00:00"
+          slotLabelInterval="01:00"
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",

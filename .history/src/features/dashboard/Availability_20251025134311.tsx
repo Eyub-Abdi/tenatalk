@@ -105,11 +105,6 @@ export default function Availability() {
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const brandColor = useColorModeValue("#4299E1", "#63B3ED");
 
-  // Calculate today to make it the first column
-  const weekStartDate = useMemo(() => {
-    return new Date();
-  }, []);
-
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(availability));
@@ -223,7 +218,6 @@ export default function Availability() {
         description: `${dayKey} at ${timeSlot} marked unavailable`,
         status: "info",
         duration: 2000,
-        position: "top-right",
       });
     },
     [toast]
@@ -307,45 +301,18 @@ export default function Availability() {
           },
           "& .fc-button": {
             backgroundColor: brandColor,
-            border: "none",
+            borderColor: brandColor,
             textTransform: "capitalize",
             fontSize: "sm",
             padding: "0.5rem 1rem",
-            outline: "none",
-            boxShadow: "none",
           },
           "& .fc-button:hover": {
             backgroundColor: brandColor,
             opacity: 0.9,
           },
-          "& .fc-button:focus": {
-            outline: "none",
-            boxShadow: "none",
-          },
           "& .fc-button-primary:not(:disabled).fc-button-active": {
             backgroundColor: brandColor,
-            border: "none",
-            outline: "none",
-            boxShadow: "none",
-            opacity: 1,
-            fontWeight: "600",
-          },
-          "& .fc-button-group .fc-button": {
-            outline: "none !important",
-            boxShadow: "none !important",
-            opacity: 0.7,
-          },
-          "& .fc-button-group .fc-button:focus": {
-            outline: "none !important",
-            boxShadow: "none !important",
-          },
-          "& .fc-button-group .fc-button:active": {
-            outline: "none !important",
-            boxShadow: "none !important",
-          },
-          "& .fc-button-group .fc-button-active": {
-            opacity: "1 !important",
-            fontWeight: "600 !important",
+            borderColor: brandColor,
           },
           "& .fc-col-header-cell": {
             padding: "0.75rem",
@@ -355,14 +322,7 @@ export default function Availability() {
             color: "gray.500",
           },
           "& .fc-timegrid-slot": {
-            height: "2rem",
-          },
-          "& .fc-timegrid-axis": {
-            width: "90px",
-            paddingRight: "16px",
-          },
-          "& .fc-timegrid-slot-label": {
-            paddingRight: "16px",
+            height: "3rem",
           },
           "& .fc-event": {
             cursor: "pointer",
@@ -371,25 +331,15 @@ export default function Availability() {
           "& .fc-daygrid-day": {
             cursor: "pointer",
           },
-          "& .fc-highlight": {
-            backgroundColor: "#4299E1 !important",
-            opacity: "0.3",
-          },
-          "& .fc-timegrid-event": {
-            backgroundColor: "#48BB78 !important",
-            borderColor: "#48BB78 !important",
-          },
         }}
       >
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
           initialView="timeGridWeek"
-          initialDate={weekStartDate}
-          firstDay={weekStartDate.getDay()}
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "timeGridWeek,timeGridDay",
+            right: "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           slotMinTime={`${START_HOUR.toString().padStart(2, "0")}:00:00`}
           slotMaxTime={`${(END_HOUR + 1).toString().padStart(2, "0")}:00:00`}
@@ -400,8 +350,9 @@ export default function Availability() {
           eventClick={handleEventClick}
           events={events}
           height="auto"
-          slotDuration="00:30:00"
-          slotLabelInterval="00:30"
+          firstDay={1}
+          slotDuration="01:00:00"
+          slotLabelInterval="01:00"
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",
