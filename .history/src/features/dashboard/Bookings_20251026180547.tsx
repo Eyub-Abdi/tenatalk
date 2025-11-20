@@ -748,7 +748,7 @@ export default function Bookings() {
               <Box 
                 mb={5} 
                 p={4} 
-                bg={modalInfoBg} 
+                bg={useColorModeValue("brand.50", "brand.900")} 
                 borderRadius="lg"
               >
                 <Text fontWeight="600" fontSize="md" mb={1}>

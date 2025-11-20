@@ -274,8 +274,8 @@ export default function Availability() {
               Availability Calendar
             </Heading>
             <Text color="gray.600" fontSize="md">
-              Click on time slots to toggle your availability. Click existing
-              slots to remove them.
+              Click on time slots to toggle your availability. Click existing slots
+              to remove them.
             </Text>
           </Box>
 
@@ -301,11 +301,11 @@ export default function Availability() {
               Clear all
             </Button>
             {lastSavedAt && (
-              <Badge
-                colorScheme="green"
-                fontSize="sm"
-                py={2}
-                px={3}
+              <Badge 
+                colorScheme="green" 
+                fontSize="sm" 
+                py={2} 
+                px={3} 
                 borderRadius="md"
                 fontWeight="500"
               >
@@ -401,14 +401,6 @@ export default function Availability() {
             backgroundColor: "#48BB78 !important",
             borderColor: "#48BB78 !important",
           },
-          "& .fc-timegrid-now-indicator-line": {
-            borderColor: "#E53E3E",
-            borderWidth: "2px",
-          },
-          "& .fc-timegrid-now-indicator-arrow": {
-            borderColor: "#E53E3E",
-            borderWidth: "2px",
-          },
         }}
       >
         <FullCalendar
@@ -432,7 +424,6 @@ export default function Availability() {
           height="auto"
           slotDuration="00:30:00"
           slotLabelInterval="00:30"
-          nowIndicator={true}
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",

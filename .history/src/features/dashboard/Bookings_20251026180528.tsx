@@ -585,7 +585,7 @@ export default function Bookings() {
           overflowX="auto"
         >
           <Table size="md" variant="simple">
-            <Thead bg={tableHeaderBg}>
+            <Thead bg={useColorModeValue("gray.50", "gray.700")}>
               <Tr>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Student</Th>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Lesson window</Th>
@@ -748,7 +748,7 @@ export default function Bookings() {
               <Box 
                 mb={5} 
                 p={4} 
-                bg={modalInfoBg} 
+                bg={useColorModeValue("brand.50", "brand.900")} 
                 borderRadius="lg"
               >
                 <Text fontWeight="600" fontSize="md" mb={1}>

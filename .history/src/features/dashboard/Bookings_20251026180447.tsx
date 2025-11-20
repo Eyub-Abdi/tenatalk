@@ -56,11 +56,6 @@ export default function Bookings() {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const mutedText = useColorModeValue("gray.600", "gray.400");
-  const hoverBg = useColorModeValue("gray.50", "gray.700");
-  const iconBoxBg = useColorModeValue("brand.50", "brand.900");
-  const iconColor = useColorModeValue("#0d6efd", "#4299E1");
-  const tableHeaderBg = useColorModeValue("gray.50", "gray.700");
-  const modalInfoBg = useColorModeValue("brand.50", "brand.900");
 
   const { data, isLoading, isError, error, refetch } = useLessons({
     mine: true,
@@ -585,7 +580,7 @@ export default function Bookings() {
           overflowX="auto"
         >
           <Table size="md" variant="simple">
-            <Thead bg={tableHeaderBg}>
+            <Thead bg={useColorModeValue("gray.50", "gray.700")}>
               <Tr>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Student</Th>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Lesson window</Th>
@@ -643,16 +638,16 @@ export default function Bookings() {
                     endLesson.isPending && endLesson.variables === booking.id;
 
                   return (
-                    <Tr key={booking.id} _hover={{ bg: hoverBg }} transition="background 0.2s">
+                    <Tr key={booking.id} _hover={{ bg: useColorModeValue("gray.50", "gray.700") }} transition="background 0.2s">
                       <Td py={4}>
                         <Stack spacing={1}>
                           <HStack spacing={2}>
                             <Box
-                              bg={iconBoxBg}
+                              bg={useColorModeValue("brand.50", "brand.900")}
                               p={2}
                               borderRadius="md"
                             >
-                              <FiUser color={iconColor} size={16} />
+                              <FiUser color={useColorModeValue("#0d6efd", "#4299E1")} size={16} />
                             </Box>
                             <Text fontWeight="600" fontSize="sm">
                               {booking.student_name || "Unassigned student"}
@@ -739,75 +734,57 @@ export default function Bookings() {
       </Stack>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="lg">
-        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
-        <ModalContent borderRadius="xl" shadow="xl">
-          <ModalHeader fontWeight="700" fontSize="xl">Request reschedule</ModalHeader>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Request reschedule</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody>
             {selectedBooking && (
-              <Box 
-                mb={5} 
-                p={4} 
-                bg={modalInfoBg} 
-                borderRadius="lg"
-              >
-                <Text fontWeight="600" fontSize="md" mb={1}>
+              <Box mb={4}>
+                <Text fontWeight="semibold">
                   {selectedBooking.student_name || "Unassigned student"}
                 </Text>
                 <Text fontSize="sm" color={mutedText}>
-                  Current time:{" "}
-                  <Text as="span" fontWeight="500">
-                    {formatDateTime.format(
-                      new Date(selectedBooking.scheduled_start)
-                    )}
-                  </Text>
+                  Current:{" "}
+                  {formatDateTime.format(
+                    new Date(selectedBooking.scheduled_start)
+                  )}
                 </Text>
               </Box>
             )}
-            <Stack spacing={4}>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">New start time</FormLabel>
-                <Input
-                  type="datetime-local"
-                  value={newStart}
-                  onChange={(e) => setNewStart(e.target.value)}
-                  size="lg"
-                  borderRadius="lg"
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">New end time</FormLabel>
-                <Input
-                  type="datetime-local"
-                  value={newEnd}
-                  onChange={(e) => setNewEnd(e.target.value)}
-                  size="lg"
-                  borderRadius="lg"
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">Reason (optional)</FormLabel>
-                <Textarea
-                  placeholder="Let the student know why you need to move the session..."
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  rows={4}
-                  borderRadius="lg"
-                  resize="vertical"
-                />
-              </FormControl>
-            </Stack>
+            <FormControl mb={3}>
+              <FormLabel>New start</FormLabel>
+              <Input
+                type="datetime-local"
+                value={newStart}
+                onChange={(e) => setNewStart(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb={3}>
+              <FormLabel>New end</FormLabel>
+              <Input
+                type="datetime-local"
+                value={newEnd}
+                onChange={(e) => setNewEnd(e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Reason</FormLabel>
+              <Textarea
+                placeholder="Let the student know why you need to move the session."
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </FormControl>
           </ModalBody>
-          <ModalFooter gap={3}>
-            <Button onClick={handleCloseModal} variant="ghost" size="lg" fontWeight="500">
+          <ModalFooter>
+            <Button mr={3} onClick={handleCloseModal} variant="ghost">
               Cancel
             </Button>
             <Button
               colorScheme="brand"
               onClick={submitReschedule}
               isLoading={isPending}
-              size="lg"
-              fontWeight="500"
             >
               Submit request
             </Button>

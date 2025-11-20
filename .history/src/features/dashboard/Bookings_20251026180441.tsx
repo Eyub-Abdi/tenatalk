@@ -56,11 +56,6 @@ export default function Bookings() {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const mutedText = useColorModeValue("gray.600", "gray.400");
-  const hoverBg = useColorModeValue("gray.50", "gray.700");
-  const iconBoxBg = useColorModeValue("brand.50", "brand.900");
-  const iconColor = useColorModeValue("#0d6efd", "#4299E1");
-  const tableHeaderBg = useColorModeValue("gray.50", "gray.700");
-  const modalInfoBg = useColorModeValue("brand.50", "brand.900");
 
   const { data, isLoading, isError, error, refetch } = useLessons({
     mine: true,
@@ -565,10 +560,10 @@ export default function Bookings() {
         </HStack>
 
         {isError && (
-          <Alert status="error" variant="left-accent" borderRadius="xl">
+          <Alert status="error" variant="left-accent" borderRadius="md">
             <AlertIcon />
             <Box>
-              <AlertTitle fontSize="sm" fontWeight="600">Unable to load bookings</AlertTitle>
+              <AlertTitle fontSize="sm">Unable to load bookings</AlertTitle>
               <AlertDescription fontSize="sm">
                 {errorMessage ?? "Please try again."}
               </AlertDescription>
@@ -578,19 +573,19 @@ export default function Bookings() {
 
         <Box
           bg={cardBg}
-          borderRadius="xl"
+          borderRadius="md"
           border="1px solid"
           borderColor={borderColor}
           shadow="sm"
           overflowX="auto"
         >
-          <Table size="md" variant="simple">
-            <Thead bg={tableHeaderBg}>
+          <Table size="sm">
+            <Thead>
               <Tr>
-                <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Student</Th>
-                <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Lesson window</Th>
-                <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Status</Th>
-                <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide" textAlign="right">Actions</Th>
+                <Th>Student</Th>
+                <Th>Lesson window</Th>
+                <Th>Status</Th>
+                <Th textAlign="right">Actions</Th>
               </Tr>
             </Thead>
             <Tbody>
@@ -643,87 +638,68 @@ export default function Bookings() {
                     endLesson.isPending && endLesson.variables === booking.id;
 
                   return (
-                    <Tr key={booking.id} _hover={{ bg: hoverBg }} transition="background 0.2s">
-                      <Td py={4}>
+                    <Tr key={booking.id}>
+                      <Td>
                         <Stack spacing={1}>
                           <HStack spacing={2}>
-                            <Box
-                              bg={iconBoxBg}
-                              p={2}
-                              borderRadius="md"
-                            >
-                              <FiUser color={iconColor} size={16} />
-                            </Box>
-                            <Text fontWeight="600" fontSize="sm">
+                            <FiUser color="#718096" />
+                            <Text fontWeight="semibold">
                               {booking.student_name || "Unassigned student"}
                             </Text>
                           </HStack>
-                          <Text fontSize="xs" color={mutedText} ml={10}>
-                            {booking.lesson_type}
+                          <Text fontSize="xs" color={mutedText}>
+                            Lesson type: {booking.lesson_type}
                           </Text>
                         </Stack>
                       </Td>
-                      <Td py={4}>
+                      <Td>
                         <Stack spacing={1}>
-                          <Text fontWeight="500" fontSize="sm">
+                          <Text>
                             {formatDateTime.format(
                               new Date(booking.scheduled_start)
                             )}
                           </Text>
-                          <Text fontSize="xs" color="brand.500" fontWeight="600">
+                          <Text fontSize="xs" color={mutedText}>
                             {relativeLabel(booking.scheduled_start)}
                           </Text>
                           {durationMinutes && (
-                            <Badge colorScheme="purple" fontSize="xs" px={2} py={0.5} borderRadius="md">
+                            <Badge colorScheme="purple">
                               {durationMinutes} min
                             </Badge>
                           )}
                         </Stack>
                       </Td>
-                      <Td py={4}>
-                        <Badge 
-                          colorScheme={meta.colorScheme} 
-                          fontSize="xs" 
-                          px={3} 
-                          py={1} 
-                          borderRadius="md"
-                          fontWeight="600"
-                        >
+                      <Td>
+                        <Badge colorScheme={meta.colorScheme}>
                           {meta.label}
                         </Badge>
                       </Td>
-                      <Td textAlign="right" py={4}>
-                        <ButtonGroup size="sm" variant="outline" spacing={2}>
-                          <Tooltip label="Start lesson" hasArrow placement="top">
+                      <Td textAlign="right">
+                        <ButtonGroup size="xs" variant="outline" spacing={2}>
+                          <Tooltip label="Start lesson" hasArrow>
                             <Button
                               leftIcon={<FiPlay />}
                               onClick={() => handleStartLesson(booking)}
                               isDisabled={!canStart}
                               isLoading={isStarting}
-                              colorScheme="green"
-                              fontWeight="500"
                             >
                               Start
                             </Button>
                           </Tooltip>
-                          <Tooltip label="Mark complete" hasArrow placement="top">
+                          <Tooltip label="Mark complete" hasArrow>
                             <Button
                               leftIcon={<FiCheckCircle />}
                               onClick={() => handleEndLesson(booking)}
                               isDisabled={!canComplete}
                               isLoading={isCompleting}
-                              colorScheme="blue"
-                              fontWeight="500"
                             >
                               Complete
                             </Button>
                           </Tooltip>
-                          <Tooltip label="Propose a new time" hasArrow placement="top">
+                          <Tooltip label="Propose a new time" hasArrow>
                             <Button
                               leftIcon={<FiEdit3 />}
                               onClick={() => openReschedule(booking)}
-                              colorScheme="brand"
-                              fontWeight="500"
                             >
                               Reschedule
                             </Button>
@@ -739,75 +715,57 @@ export default function Bookings() {
       </Stack>
 
       <Modal isOpen={isOpen} onClose={handleCloseModal} isCentered size="lg">
-        <ModalOverlay bg="blackAlpha.300" backdropFilter="blur(10px)" />
-        <ModalContent borderRadius="xl" shadow="xl">
-          <ModalHeader fontWeight="700" fontSize="xl">Request reschedule</ModalHeader>
+        <ModalOverlay />
+        <ModalContent>
+          <ModalHeader>Request reschedule</ModalHeader>
           <ModalCloseButton />
-          <ModalBody pb={6}>
+          <ModalBody>
             {selectedBooking && (
-              <Box 
-                mb={5} 
-                p={4} 
-                bg={modalInfoBg} 
-                borderRadius="lg"
-              >
-                <Text fontWeight="600" fontSize="md" mb={1}>
+              <Box mb={4}>
+                <Text fontWeight="semibold">
                   {selectedBooking.student_name || "Unassigned student"}
                 </Text>
                 <Text fontSize="sm" color={mutedText}>
-                  Current time:{" "}
-                  <Text as="span" fontWeight="500">
-                    {formatDateTime.format(
-                      new Date(selectedBooking.scheduled_start)
-                    )}
-                  </Text>
+                  Current:{" "}
+                  {formatDateTime.format(
+                    new Date(selectedBooking.scheduled_start)
+                  )}
                 </Text>
               </Box>
             )}
-            <Stack spacing={4}>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">New start time</FormLabel>
-                <Input
-                  type="datetime-local"
-                  value={newStart}
-                  onChange={(e) => setNewStart(e.target.value)}
-                  size="lg"
-                  borderRadius="lg"
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">New end time</FormLabel>
-                <Input
-                  type="datetime-local"
-                  value={newEnd}
-                  onChange={(e) => setNewEnd(e.target.value)}
-                  size="lg"
-                  borderRadius="lg"
-                />
-              </FormControl>
-              <FormControl>
-                <FormLabel fontWeight="500" fontSize="sm">Reason (optional)</FormLabel>
-                <Textarea
-                  placeholder="Let the student know why you need to move the session..."
-                  value={reason}
-                  onChange={(e) => setReason(e.target.value)}
-                  rows={4}
-                  borderRadius="lg"
-                  resize="vertical"
-                />
-              </FormControl>
-            </Stack>
+            <FormControl mb={3}>
+              <FormLabel>New start</FormLabel>
+              <Input
+                type="datetime-local"
+                value={newStart}
+                onChange={(e) => setNewStart(e.target.value)}
+              />
+            </FormControl>
+            <FormControl mb={3}>
+              <FormLabel>New end</FormLabel>
+              <Input
+                type="datetime-local"
+                value={newEnd}
+                onChange={(e) => setNewEnd(e.target.value)}
+              />
+            </FormControl>
+            <FormControl>
+              <FormLabel>Reason</FormLabel>
+              <Textarea
+                placeholder="Let the student know why you need to move the session."
+                value={reason}
+                onChange={(e) => setReason(e.target.value)}
+              />
+            </FormControl>
           </ModalBody>
-          <ModalFooter gap={3}>
-            <Button onClick={handleCloseModal} variant="ghost" size="lg" fontWeight="500">
+          <ModalFooter>
+            <Button mr={3} onClick={handleCloseModal} variant="ghost">
               Cancel
             </Button>
             <Button
               colorScheme="brand"
               onClick={submitReschedule}
               isLoading={isPending}
-              size="lg"
-              fontWeight="500"
             >
               Submit request
             </Button>

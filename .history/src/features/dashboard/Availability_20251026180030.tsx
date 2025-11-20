@@ -401,14 +401,6 @@ export default function Availability() {
             backgroundColor: "#48BB78 !important",
             borderColor: "#48BB78 !important",
           },
-          "& .fc-timegrid-now-indicator-line": {
-            borderColor: "#E53E3E",
-            borderWidth: "2px",
-          },
-          "& .fc-timegrid-now-indicator-arrow": {
-            borderColor: "#E53E3E",
-            borderWidth: "2px",
-          },
         }}
       >
         <FullCalendar
@@ -432,7 +424,6 @@ export default function Availability() {
           height="auto"
           slotDuration="00:30:00"
           slotLabelInterval="00:30"
-          nowIndicator={true}
           slotLabelFormat={{
             hour: "2-digit",
             minute: "2-digit",

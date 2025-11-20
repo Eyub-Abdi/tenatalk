@@ -19,7 +19,7 @@ import BecomeTeacher from "./pages/BecomeTeacher";
 import TeacherApplication from "./pages/TeacherApplication";
 import TeacherApplicationSuccess from "./pages/TeacherApplicationSuccess";
 import { FiMenu, FiX } from "react-icons/fi";
-import type { ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
   Hero,
   Offers,
@@ -182,9 +182,15 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuth();
   const { openLogin } = useAuthModal();
 
+  useEffect(() => {
+    if (!isAuthenticated) {
+      const timer = window.setTimeout(() => openLogin(), 100);
+      return () => window.clearTimeout(timer);
+    }
+    return undefined;
+  }, [isAuthenticated, openLogin]);
+
   if (!isAuthenticated) {
-    // Open login modal and redirect to home
-    setTimeout(() => openLogin(), 100); // Small delay to avoid React warnings
     return (
       <Layout>
         <Box p={10} textAlign="center">

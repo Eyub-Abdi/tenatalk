@@ -56,11 +56,6 @@ export default function Bookings() {
   const cardBg = useColorModeValue("white", "gray.800");
   const borderColor = useColorModeValue("gray.200", "gray.700");
   const mutedText = useColorModeValue("gray.600", "gray.400");
-  const hoverBg = useColorModeValue("gray.50", "gray.700");
-  const iconBoxBg = useColorModeValue("brand.50", "brand.900");
-  const iconColor = useColorModeValue("#0d6efd", "#4299E1");
-  const tableHeaderBg = useColorModeValue("gray.50", "gray.700");
-  const modalInfoBg = useColorModeValue("brand.50", "brand.900");
 
   const { data, isLoading, isError, error, refetch } = useLessons({
     mine: true,
@@ -585,7 +580,7 @@ export default function Bookings() {
           overflowX="auto"
         >
           <Table size="md" variant="simple">
-            <Thead bg={tableHeaderBg}>
+            <Thead bg={useColorModeValue("gray.50", "gray.700")}>
               <Tr>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Student</Th>
                 <Th fontWeight="600" fontSize="xs" textTransform="uppercase" letterSpacing="wide">Lesson window</Th>
@@ -643,16 +638,16 @@ export default function Bookings() {
                     endLesson.isPending && endLesson.variables === booking.id;
 
                   return (
-                    <Tr key={booking.id} _hover={{ bg: hoverBg }} transition="background 0.2s">
+                    <Tr key={booking.id} _hover={{ bg: useColorModeValue("gray.50", "gray.700") }} transition="background 0.2s">
                       <Td py={4}>
                         <Stack spacing={1}>
                           <HStack spacing={2}>
                             <Box
-                              bg={iconBoxBg}
+                              bg={useColorModeValue("brand.50", "brand.900")}
                               p={2}
                               borderRadius="md"
                             >
-                              <FiUser color={iconColor} size={16} />
+                              <FiUser color={useColorModeValue("#0d6efd", "#4299E1")} size={16} />
                             </Box>
                             <Text fontWeight="600" fontSize="sm">
                               {booking.student_name || "Unassigned student"}
@@ -748,7 +743,7 @@ export default function Bookings() {
               <Box 
                 mb={5} 
                 p={4} 
-                bg={modalInfoBg} 
+                bg={useColorModeValue("brand.50", "brand.900")} 
                 borderRadius="lg"
               >
                 <Text fontWeight="600" fontSize="md" mb={1}>
