@@ -4,7 +4,7 @@ import { z } from "zod";
 
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
-  "https://a563930023df.ngrok-free.app/api";
+  "https://c585ea25634c.ngrok-free.app/api";
 
 // Zod validation schemas
 const loginSchema = z.object({

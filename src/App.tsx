@@ -11,7 +11,7 @@ import {
   Stack,
   useColorModeValue,
 } from "@chakra-ui/react";
-import { Link as RouterLink, Route, Routes } from "react-router-dom";
+import { Link as RouterLink, Navigate, Route, Routes } from "react-router-dom";
 import TermsPage from "./pages/Terms";
 import PrivacyPage from "./pages/Privacy";
 import LessonsDemoPage from "./pages/LessonsDemo";
@@ -191,16 +191,7 @@ function ProtectedRoute({ children }: { children: ReactNode }) {
   }, [isAuthenticated, openLogin]);
 
   if (!isAuthenticated) {
-    return (
-      <Layout>
-        <Box p={10} textAlign="center">
-          <Heading size="md" mb={4}>
-            Access Restricted
-          </Heading>
-          <Box>Please log in to access the dashboard.</Box>
-        </Box>
-      </Layout>
-    );
+    return <Navigate to="/" replace />;
   }
 
   return <>{children}</>;
